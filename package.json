@@ -1,0 +1,40 @@
+{
+  "name": "eloquent-javascript-translator",
+  "version": "0.1.0",
+  "main": "dist/app.js",
+  "private": true,
+  "scripts": {
+    "start": "tsc && NODE_ENV=production node dist/main",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jingkun Hua <huajingkun1214@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/glob": "^5.0.33",
+    "@types/jsonwebtoken": "^7.2.3",
+    "@types/koa": "^2.0.39",
+    "@types/koa-bodyparser": "^3.0.25",
+    "@types/koa-router": "^7.0.23",
+    "@types/lodash": "^4.14.81",
+    "@types/log4js": "^2.3.5",
+    "@types/mongoose": "^4.7.25",
+    "@types/node": "^8.0.47",
+    "ajv": "^5.3.0",
+    "axios": "^0.17.0",
+    "glob": "^7.1.2",
+    "jsonwebtoken": "^8.1.0",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-rewrite": "^3.0.0",
+    "koa-router": "^7.2.1",
+    "lodash": "^4.17.4",
+    "log4js": "^2.3.11",
+    "mongoose": "^4.13.0"
+  },
+  "devDependencies": {
+    "tslint": "^5.8.0",
+    "tslint-config-standard": "^7.0.0",
+    "typescript": "^2.6.1"
+  }
+}
