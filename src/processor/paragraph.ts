@@ -52,6 +52,7 @@ export default class Paragraph {
     this.translation = result['translation'].join('\n')
   }
 
+  /** Generate the source string from the paragraph object */
   toString () {
     const source = this.source
     const translation = this.translation
@@ -65,5 +66,14 @@ export default class Paragraph {
       .join('\n')
 
     return [source, translation, meta].filter(s => s).join('\n').trim()
+  }
+
+  /**
+   * Get the final translation of the paragraph.
+   * If this paragraph has no translation (maybe intended),
+   * use its source instead.
+   */
+  getTranslation () {
+    return this.translation || this.source
   }
 }
