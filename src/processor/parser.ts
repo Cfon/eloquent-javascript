@@ -7,7 +7,7 @@ const DOUBLE_LINE_BREAK = '\n\n'
 export default function parse (input: string) {
   // split paragraphs by empty lines
   const paragraphs = input
-    .split(DOUBLE_LINE_BREAK)
+    .split(/\n{2,}/)
     .map(p => p.trim())
     .filter(p => p)
 
