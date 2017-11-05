@@ -4,9 +4,9 @@
   "main": "dist/app.js",
   "private": true,
   "scripts": {
-    "start": "tsc && NODE_ENV=production node dist/main",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc && NODE_ENV=production node dist/main",
+    "import": "tsc && node dist/import"
   },
   "author": "Jingkun Hua <huajingkun1214@gmail.com>",
   "license": "MIT",
