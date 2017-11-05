@@ -1,13 +1,12 @@
 'use strict'
 
 import Paragraph from './paragraph'
-import { readFileSync } from 'fs'
 
 const DOUBLE_LINE_BREAK = '\n\n'
 
-export default function parse (filename: string) {
+export default function parse (input: string) {
   // split paragraphs by empty lines
-  const paragraphs = readFileSync(filename, 'utf8')
+  const paragraphs = input
     .split(DOUBLE_LINE_BREAK)
     .map(p => p.trim())
     .filter(p => p)
@@ -33,13 +32,6 @@ export default function parse (filename: string) {
       }
     }
   }
-
-  paragraphs.forEach(p => {
-    const s = new Paragraph(p).toString()
-    if (s !== p) {
-      debugger
-    }
-  })
 
   // convert paragraphs to string
   return paragraphs.map(p => new Paragraph(p))
