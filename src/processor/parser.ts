@@ -15,7 +15,7 @@ export default function parse (input: string) {
     // merge code blocks (because there may have empty lines in code blocks)
     if (/^```/.test(paragraph) && !/```(\nif}})?$/.test(paragraph)) {
       let j: number
-      for (j = i + 1; j < paragraph.length; j++) {
+      for (j = i + 1; j < paragraphs.length; j++) {
         if (/^```$/m.test(paragraphs[j])) {
           break
         }
