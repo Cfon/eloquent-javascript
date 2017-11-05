@@ -28,10 +28,10 @@ export default function merge (filename: string) {
       if (ours.length === theirs.length) {
         // merge source content from theirs to ours
         result = ours
-        result.forEach((p, i) => {
+        for (const [i, p] of result.entries()) {
+          p.meta.updated = { from: p.source, to: theirs[i].source }
           p.source = theirs[i].source
-          p.meta.updated = true
-        })
+        }
       } else {
         result = theirs
       }
