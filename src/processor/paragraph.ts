@@ -60,6 +60,10 @@ export default class Paragraph {
     }
   }
 
+  static generateSource (paragraphs: Paragraph[]) {
+    return paragraphs.map(p => p.toString()).join('\n\n')
+  }
+
   /** Generate the source string from the paragraph object */
   toString () {
     const source = this.source
