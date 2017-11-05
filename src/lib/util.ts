@@ -1,6 +1,7 @@
 'use strict'
 
 import { Context } from 'koa'
+import { createHash } from 'crypto'
 
 /** 生成一份 HTTP 请求完整记录 */
 export function dumpHttpRequest (ctx: Context) {
@@ -19,6 +20,11 @@ export function dumpHttpRequest (ctx: Context) {
   }
 
   return result
+}
+
+/** 计算 sha1 值 */
+export function sha1 (content: string | Buffer) {
+  return createHash('sha1').update(content).digest('hex')
 }
 
 /** 生成随机字符串 */

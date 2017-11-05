@@ -1,6 +1,8 @@
 'use strict'
 
-export type ParagraphMeta = { [key: string]: undefined | true | object }
+import { sha1, randomString } from '../lib/util'
+
+export type ParagraphMeta = { [key: string]: any }
 
 export default class Paragraph {
   /** The original text of the paragraph */
@@ -11,6 +13,8 @@ export default class Paragraph {
 
   /** The additional data of the paragraph */
   meta: ParagraphMeta = {}
+
+  get id () { return this.meta.id as string }
 
   constructor (input: string) {
     // parse translation and meta by line
@@ -50,6 +54,10 @@ export default class Paragraph {
 
     this.source = result['source'].join('\n')
     this.translation = result['translation'].join('\n')
+
+    if (!this.meta.id) {
+      this.meta.id = this.generateId()
+    }
   }
 
   /** Generate the source string from the paragraph object */
@@ -75,5 +83,10 @@ export default class Paragraph {
    */
   getTranslation () {
     return this.translation || this.source
+  }
+
+  /** Generate a random id using sha1 */
+  private generateId () {
+    return sha1(this.source + randomString(8))
   }
 }
