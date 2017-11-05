@@ -9,5 +9,6 @@ module.exports = {
   },
   logs: path.join(__dirname, 'logs'),
   port: 3000,
-  secret: ''
+  secret: '',
+  workDir: path.join(__dirname, '../eloquent-javascript'),
 }
