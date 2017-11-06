@@ -10,7 +10,7 @@ function changeMatches (input: string, content: string, matches: RegExpMatchArra
 }
 
 /**
- * Merge changes from marijnh/3rd.
+ * Merge changes from remote git repository.
  * This will search for git merge notations,
  * then keep translations and meta unchanged,
  * and update the source with a 'sourceUpdated' meta added.
@@ -19,7 +19,7 @@ export default function merge (filename: string) {
   let input = readFileSync(filename, 'utf8')
 
   let matches: RegExpMatchArray | null
-  while (matches = input.match(/<<<<<<< HEAD\n((?:.|\n)*?)=======\n((?:.|\n)*?)>>>>>>> [0-9a-z]+/)) {
+  while (matches = input.match(/<<<<<<< HEAD\n((?:.|\n)*?)=======\n((?:.|\n)*?)>>>>>>> .*/)) {
     try {
       let result: Paragraph[]
       const ours = parse(matches[1])
