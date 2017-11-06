@@ -4,9 +4,20 @@ import { sha1, parseJSON, randomString } from '../lib/util'
 
 export type ParagraphMeta = { [key: string]: any }
 
+export interface ParagraphVersion {
+  content: string,
+  date: Date
+}
+
 export default class Paragraph {
   /** The original text of the paragraph */
   source: string
+
+  /**
+   * The versions of the source content.
+   * This will not be saved to the .md file.
+   */
+  sourceVersions: ParagraphVersion[]
 
   /** The translation of the paragraph */
   translation: string

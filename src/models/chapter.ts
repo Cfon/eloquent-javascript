@@ -6,10 +6,16 @@ import * as fs from 'mz/fs'
 import Paragraph from '../processor/paragraph'
 import { Document, Model, Schema } from 'mongoose'
 
-export interface Chapter extends Document {
+interface ChapterMethods {
+  export (this: Chapter): Promise<void>,
+  updateParagraphs (this: Chapter, paragraphs: Paragraph[]): Promise<Chapter>
+}
+
+export interface Chapter extends Document, ChapterMethods {
   _id: number,
   file: string,
   title: string,
+  lastEdit: Date,
   paragraphs: Paragraph[]
 }
 
@@ -18,6 +24,14 @@ export const paragraphSchema = new Schema({
   source: {
     type: String,
     default: ''
+  },
+  sourceVersions: {
+    type: [{
+      _id: false,
+      content: String,
+      date: Date
+    }],
+    default: () => []
   },
   translation: {
     type: String,
@@ -39,6 +53,10 @@ export const schema = new Schema({
     type: String,
     default: ''
   },
+  lastEdit: {
+    type: Date,
+    default: () => new Date()
+  },
   paragraphs: {
     type: [paragraphSchema],
     default: () => ([])
@@ -47,25 +65,31 @@ export const schema = new Schema({
   toJSON: { versionKey: false }
 })
 
-interface ChapterMethods {
-  /** Export chapter to file */
-  export (this: Chapter): Promise<void>,
-
-  /** Synchronize chapter from file */
-  sync (this: Chapter): Promise<Chapter>
-}
-
-interface ChapterModel extends Model<Chapter>, ChapterMethods {}
-
 schema.methods = {
   export () {
     return fs.writeFile(this.file, Paragraph.generateSource(this.paragraphs))
   },
-  async sync () {
-    const input = await fs.readFile(this.file, 'utf8')
-    this.paragraphs = parse(input)
+  async updateParagraphs (paragraphs) {
+    for (const paragraph of paragraphs) {
+      const oldParagraph = this.paragraphs.find(p => p.id === paragraph.id)
+      if (oldParagraph) {
+        paragraph.meta = oldParagraph.meta
+        paragraph.sourceVersions = oldParagraph.sourceVersions || []
+
+        // record source content changes
+        if (paragraph.source.replace(/\n/g, ' ') !== oldParagraph.source.replace(/\n/g, ' ')) {
+          paragraph.sourceVersions.push({
+            content: oldParagraph.source,
+            date: new Date()
+          })
+        }
+      }
+    }
+
+    this.lastEdit = new Date()
+    this.paragraphs = paragraphs
     return this.save()
   }
 } as ChapterMethods
 
-export default db.model<Chapter, ChapterModel>('chapter', schema)
+export default db.model<Chapter>('chapter', schema)
