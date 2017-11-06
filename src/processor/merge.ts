@@ -29,7 +29,6 @@ export default async function merge (filename: string) {
         // merge source content from theirs to ours
         result = ours
         for (const [i, p] of result.entries()) {
-          p.meta.updated = { from: p.source, to: theirs[i].source }
           p.source = theirs[i].source
         }
       } else {
@@ -43,8 +42,6 @@ export default async function merge (filename: string) {
     }
   }
 
-  // parse and generate again to make sure that every paragraph has an id
-  const paragraphs = parse(input)
-  await writeFile(filename, Paragraph.generateSource(paragraphs))
-  return paragraphs
+  // parse again to make sure that every paragraph has an id
+  return parse(input)
 }
