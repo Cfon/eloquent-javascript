@@ -1,10 +1,9 @@
 'use strict'
 
-import parse from './processor/parser'
 import Chapter from './models/chapter'
-import Paragraph from './processor/paragraph'
 import * as fs from 'mz/fs'
 import * as path from 'path'
+import importFile from './processor/import'
 import * as _glob from 'glob'
 import { promisify } from 'util'
 
@@ -16,20 +15,7 @@ const config = require('../config')
   await Chapter.remove({})
 
   for (const file of files) {
-    const _id = parseInt(path.parse(file).name, 10)
-    const input = await fs.readFile(file, 'utf8')
-    const paragraphs = parse(input)
-
-    let title: string = ''
-    for (const paragraph of paragraphs) {
-      const translation = paragraph.getTranslation()
-      if (translation.startsWith('# ')) {
-        title = translation.slice(2)
-      }
-    }
-
-    await fs.writeFile(file, Paragraph.generateSource(paragraphs))
-    await new Chapter({ _id, file, title, paragraphs }).save()
+    await importFile(file)
   }
 })().catch(err => {
   console.error(err)
