@@ -51,3 +51,12 @@ export function removeUndefined (obj: any) {
 
   return obj
 }
+
+/** 不会抛出异常的 JSON.parse */
+export function parseJSON (json: string) {
+  try {
+    return JSON.parse(json)
+  } catch (err) {
+    return undefined
+  }
+}

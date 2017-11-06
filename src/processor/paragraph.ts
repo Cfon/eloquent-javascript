@@ -1,6 +1,6 @@
 'use strict'
 
-import { sha1, randomString } from '../lib/util'
+import { sha1, parseJSON, randomString } from '../lib/util'
 
 export type ParagraphMeta = { [key: string]: any }
 
@@ -31,8 +31,8 @@ export default class Paragraph {
           let argsStart
           if ((argsStart = directive.indexOf(' ')) !== -1) {
             // arguments of a meta is in JSON format
-            const args = JSON.parse(directive.slice(argsStart + 1))
-            this.meta[directive.slice(0, argsStart)] = args
+            const args = parseJSON(directive.slice(argsStart + 1))
+            this.meta[directive.slice(0, argsStart)] = args === undefined ? true : args
           } else {
             this.meta[directive] = true
           }
