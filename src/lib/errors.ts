@@ -44,3 +44,10 @@ export class NotAuthorizedError extends UserError {
     super('Not Authorized', 102, 403)
   }
 }
+
+/** 文件合并错误 */
+export class MergeError extends UserError {
+  constructor (message: string) {
+    super(message, 103, 403)
+  }
+}
