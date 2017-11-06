@@ -11,4 +11,5 @@ module.exports = {
   port: 3000,
   secret: '',
   workDir: path.join(__dirname, '../eloquent-javascript'),
+  remote: 'marijnh/3rd',
 }
