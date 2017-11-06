@@ -13,6 +13,8 @@ const config = require('../config')
 
 ;(async function () {
   const files = await glob(path.join(config.workDir, '[0-9]*.md'))
+  await Chapter.remove({})
+
   for (const file of files) {
     const input = await fs.readFile(file, 'utf8')
     const paragraphs = parse(input)
