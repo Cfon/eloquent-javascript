@@ -16,6 +16,7 @@ const config = require('../config')
   await Chapter.remove({})
 
   for (const file of files) {
+    const _id = parseInt(path.parse(file).name, 10)
     const input = await fs.readFile(file, 'utf8')
     const paragraphs = parse(input)
 
@@ -27,12 +28,8 @@ const config = require('../config')
       }
     }
 
-    await new Chapter({
-      _id: parseInt(path.parse(file).name, 10),
-      file,
-      title,
-      paragraphs
-    }).save()
+    await fs.writeFile(file, Paragraph.generateSource(paragraphs))
+    await new Chapter({ _id, file, title, paragraphs }).save()
   }
 })().catch(err => {
   console.error(err)
