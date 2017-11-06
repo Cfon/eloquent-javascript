@@ -51,3 +51,10 @@ export class MergeError extends UserError {
     super(message, 103, 403)
   }
 }
+
+/** 未找到请求的内容 */
+export class NotFoundError extends UserError {
+  constructor (message: string) {
+    super(message, 104, 404)
+  }
+}
