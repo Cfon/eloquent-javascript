@@ -3,8 +3,8 @@
 import db from '../lib/db'
 import parse from '../processor/parser'
 import * as fs from 'mz/fs'
-import Paragraph from '../processor/paragraph'
 import { Document, Model, Schema } from 'mongoose'
+import Paragraph, { paragraphSchema } from '../processor/paragraph'
 
 interface ChapterMethods {
   export (this: Chapter): Promise<void>,
@@ -15,33 +15,9 @@ export interface Chapter extends Document, ChapterMethods {
   _id: number,
   file: string,
   title: string,
-  lastEdit: Date,
+  updated: Date,
   paragraphs: Paragraph[]
 }
-
-export const paragraphSchema = new Schema({
-  _id: false as any,
-  source: {
-    type: String,
-    default: ''
-  },
-  sourceVersions: {
-    type: [{
-      _id: false,
-      content: String,
-      date: Date
-    }],
-    default: () => []
-  },
-  translation: {
-    type: String,
-    default: ''
-  },
-  meta: {
-    type: Object,
-    default: () => ({})
-  }
-}).loadClass(Paragraph)
 
 export const schema = new Schema({
   _id: Number,
@@ -53,7 +29,7 @@ export const schema = new Schema({
     type: String,
     default: ''
   },
-  lastEdit: {
+  updated: {
     type: Date,
     default: () => new Date()
   },
@@ -71,13 +47,17 @@ schema.methods = {
   },
   async updateParagraphs (paragraphs) {
     for (const paragraph of paragraphs) {
-      const oldParagraph = this.paragraphs.find(p => p.id === paragraph.id)
+      const oldParagraph = this.paragraphs.find(p => p._id === paragraph._id)
       if (oldParagraph) {
-        paragraph.meta = oldParagraph.meta
-        paragraph.sourceVersions = oldParagraph.sourceVersions || []
+        // update paragraph from oldParagraph except source and translation
+        Object.assign(paragraph, oldParagraph, {
+          source: paragraph.source,
+          translation: paragraph.translation
+        })
 
         // record source content changes
         if (paragraph.source.replace(/\n/g, ' ') !== oldParagraph.source.replace(/\n/g, ' ')) {
+          paragraph.updated = new Date()
           paragraph.sourceVersions.push({
             content: oldParagraph.source,
             date: new Date()
@@ -86,7 +66,7 @@ schema.methods = {
       }
     }
 
-    this.lastEdit = new Date()
+    this.updated = new Date()
     this.paragraphs = paragraphs
     return this.save()
   }

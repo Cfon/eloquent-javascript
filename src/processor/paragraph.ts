@@ -1,8 +1,7 @@
 'use strict'
 
+import { Schema, SchemaTypes } from 'mongoose'
 import { sha1, parseJSON, randomString } from '../lib/util'
-
-export type ParagraphMeta = { [key: string]: any }
 
 export interface ParagraphVersion {
   content: string,
@@ -10,22 +9,21 @@ export interface ParagraphVersion {
 }
 
 export default class Paragraph {
+  /** The id of a paragraph */
+  _id: string
+
   /** The original text of the paragraph */
   source: string
 
-  /**
-   * The versions of the source content.
-   * This will not be saved to the .md file.
-   */
-  sourceVersions: ParagraphVersion[]
+  /** The versions of the source content. */
+  sourceVersions: ParagraphVersion[] = []
 
   /** The translation of the paragraph */
   translation: string
 
-  /** The additional data of the paragraph */
-  meta: ParagraphMeta = {}
-
-  get id () { return this.meta.id as string }
+  tags: string[]
+  created: Date
+  updated: Date
 
   constructor (input: string) {
     // parse translation and meta by line
@@ -37,19 +35,13 @@ export default class Paragraph {
     let state = 'source'
     input.split('\n').forEach(content => {
       if (content[0] === '@') {
-        if (content[1] === '!') {
-          const directive = content.slice(2)
-          let argsStart
-          if ((argsStart = directive.indexOf(' ')) !== -1) {
-            // arguments of a meta is in JSON format
-            const args = parseJSON(directive.slice(argsStart + 1))
-            this.meta[directive.slice(0, argsStart)] = args === undefined ? true : args
+        if (content[1] === '!' && !this._id) {
+          if (!this._id) {
+            this._id = content.slice(2)
+            return
           } else {
-            this.meta[directive] = true
+            throw new SyntaxError('A paragraph cannot have multiple ids:\n' + input)
           }
-
-          // move to the next line
-          return
         } else if (state === 'source') {
           state = 'translation'
         }
@@ -66,8 +58,8 @@ export default class Paragraph {
     this.source = result['source'].join('\n')
     this.translation = result['translation'].join('\n')
 
-    if (!this.meta.id) {
-      this.meta.id = this.generateId()
+    if (!this._id) {
+      this._id = this.generateId()
     }
   }
 
@@ -84,11 +76,7 @@ export default class Paragraph {
       .map(l => `@${l}`)
       .join('\n')
 
-    const meta = Object.entries(this.meta)
-      .map(([k, v]) => `@!${k} ${v === true ? '' : JSON.stringify(v)}`.trim())
-      .join('\n')
-
-    return [source, translation, meta].filter(s => s).join('\n').trim()
+    return [source, translation, `@!${this._id}`].filter(s => s).join('\n').trim()
   }
 
   /**
@@ -105,3 +93,35 @@ export default class Paragraph {
     return sha1(this.source + randomString(8))
   }
 }
+
+export const paragraphSchema = new Schema({
+  _id: String,
+  source: {
+    type: String,
+    default: ''
+  },
+  sourceVersions: {
+    type: [{
+      _id: false,
+      content: String,
+      date: Date
+    }],
+    default: () => []
+  },
+  translation: {
+    type: String,
+    default: ''
+  },
+  tags: {
+    type: [String],
+    default: () => []
+  },
+  created: {
+    type: Date,
+    default: () => new Date()
+  },
+  updated: {
+    type: Date,
+    default: () => new Date()
+  }
+}).loadClass(Paragraph)
