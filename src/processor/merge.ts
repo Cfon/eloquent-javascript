@@ -2,7 +2,7 @@
 
 import parse from './parser'
 import Paragraph from './paragraph'
-import { readFileSync, writeFileSync } from 'fs'
+import { readFile, writeFile } from 'mz/fs'
 
 function changeMatches (input: string, content: string, matches: RegExpMatchArray) {
   return input.slice(0, matches.index) + content +
@@ -15,8 +15,8 @@ function changeMatches (input: string, content: string, matches: RegExpMatchArra
  * then keep translations and meta unchanged,
  * and update the source with a 'sourceUpdated' meta added.
  */
-export default function merge (filename: string) {
-  let input = readFileSync(filename, 'utf8')
+export default async function merge (filename: string) {
+  let input = await readFile(filename, 'utf8')
 
   let matches: RegExpMatchArray | null
   while (matches = input.match(/<<<<<<< HEAD\n((?:.|\n)*?)=======\n((?:.|\n)*?)>>>>>>> .*/)) {
@@ -44,6 +44,7 @@ export default function merge (filename: string) {
   }
 
   // parse and generate again to make sure that every paragraph has an id
-  input = Paragraph.generateSource(parse(input))
-  writeFileSync(filename, input)
+  const paragraphs = parse(input)
+  await writeFile(filename, Paragraph.generateSource(paragraphs))
+  return paragraphs
 }
