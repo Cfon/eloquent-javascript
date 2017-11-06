@@ -38,6 +38,7 @@ export const schema = new Schema({
     default: () => ([])
   }
 }, {
+  toObject: { versionKey: false },
   toJSON: { versionKey: false }
 })
 
