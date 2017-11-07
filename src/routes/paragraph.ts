@@ -4,7 +4,12 @@ import validate from '../lib/middlewares/validate'
 import * as Router from 'koa-router'
 import { required } from '../lib/ajv'
 import Chapter, { getParagraph } from '../models/chapter'
-import { NotFoundError, ValidationFailureError } from '../lib/errors'
+
+import {
+  ChapterNotFoundError,
+  ParagraphNotFoundError,
+  ValidationFailureError
+} from '../lib/errors'
 
 const router = new Router()
 const PAGE_SIZE = 10
@@ -43,7 +48,7 @@ router.get('chapter/:id/paragraphs/:page',
       }
     ])
 
-    if (result.length === 0) throw new NotFoundError(`没有 id 为 ${_id} 的章节`)
+    if (result.length === 0) throw new ChapterNotFoundError(_id)
     ctx.result = result[0]
   }
 )
@@ -65,8 +70,8 @@ router.get('chapter/:id/paragraph/:pid',
       { $project: { data: { $arrayElemAt: ['$paragraphs', 0] } } }
     ])
 
-    if (result[0] == null) throw new NotFoundError(`没有 id 为 ${_id} 的章节`)
-    if (result[0].data == null) throw new NotFoundError(`在第 ${_id} 章中没有 id 为 ${pid} 的段落`)
+    if (result[0] == null) throw new ChapterNotFoundError(_id)
+    if (result[0].data == null) throw new ParagraphNotFoundError(_id, pid)
 
     ctx.result = result[0].data
   }
@@ -79,8 +84,8 @@ router.patch('chapter/:id/paragraph/:pid',
   }),
   async (ctx, next) => {
     const data = await getParagraph(ctx.params.id, ctx.params.pid)
-    if (data == null) throw new NotFoundError(`没有 id 为 ${ctx.params.id} 的章节`)
-    if (data.paragraph == null) throw new NotFoundError(`在第 ${ctx.params.id} 章中没有 id 为 ${ctx.params.pid} 的段落`)
+    if (data == null) throw new ChapterNotFoundError(ctx.params.id)
+    if (data.paragraph == null) throw new ParagraphNotFoundError(ctx.params.id, ctx.params.pid)
 
     const { chapter, paragraph } = data
     const {

@@ -58,3 +58,17 @@ export class NotFoundError extends UserError {
     super(message, 104, 404)
   }
 }
+
+/** 章节未找到 */
+export class ChapterNotFoundError extends NotFoundError {
+  constructor (id: number) {
+    super(`没有 id 为 ${id} 的章节`)
+  }
+}
+
+/** 段落未找到 */
+export class ParagraphNotFoundError extends NotFoundError {
+  constructor (chapter: number, paragraph: string) {
+    super(`在第 ${chapter} 章中没有 id 为 ${paragraph} 的段落`)
+  }
+}
