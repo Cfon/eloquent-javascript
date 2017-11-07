@@ -14,9 +14,9 @@ import {
 const router = new Router()
 const PAGE_SIZE = 10
 
-router.get('chapter/:id/paragraphs/:page',
+router.get('chapter/:chapter/paragraphs/:page',
   async (ctx, next) => {
-    const _id = Number(ctx.params.id)
+    const _id = Number(ctx.params.chapter)
     const page = Number(ctx.params.page)
 
     if (Number.isNaN(_id)) throw new ValidationFailureError('id 必须是一个数字')
@@ -53,10 +53,10 @@ router.get('chapter/:id/paragraphs/:page',
   }
 )
 
-router.get('chapter/:id/paragraph/:pid',
+router.get('chapter/:chapter/paragraph/:paragraph',
   async (ctx, next) => {
-    const _id = Number(ctx.params.id)
-    const { pid } = ctx.params
+    const _id = Number(ctx.params.chapter)
+    const { paragraph } = ctx.params
 
     if (Number.isNaN(_id)) throw new ValidationFailureError('id 必须是一个数字')
 
@@ -64,28 +64,28 @@ router.get('chapter/:id/paragraph/:pid',
       { $match: { _id } },
       { $project: {
         paragraphs: { $filter: { input: '$paragraphs', as: 'paragraph', cond: {
-          $eq: ['$$paragraph._id', pid]
+          $eq: ['$$paragraph._id', paragraph]
         } } }
       } },
       { $project: { data: { $arrayElemAt: ['$paragraphs', 0] } } }
     ])
 
     if (result[0] == null) throw new ChapterNotFoundError(_id)
-    if (result[0].data == null) throw new ParagraphNotFoundError(_id, pid)
+    if (result[0].data == null) throw new ParagraphNotFoundError(_id, paragraph)
 
     ctx.result = result[0].data
   }
 )
 
-router.patch('chapter/:id/paragraph/:pid',
+router.patch('chapter/:chapter/paragraph/:paragraph',
   validate({
     translation: 'string',
     tags: ['string']
   }),
   async (ctx, next) => {
-    const data = await getParagraph(ctx.params.id, ctx.params.pid)
-    if (data == null) throw new ChapterNotFoundError(ctx.params.id)
-    if (data.paragraph == null) throw new ParagraphNotFoundError(ctx.params.id, ctx.params.pid)
+    const data = await getParagraph(ctx.params.chapter, ctx.params.paragraph)
+    if (data == null) throw new ChapterNotFoundError(ctx.params.chapter)
+    if (data.paragraph == null) throw new ParagraphNotFoundError(ctx.params.chapter, ctx.params.paragraph)
 
     const { chapter, paragraph } = data
     const {
