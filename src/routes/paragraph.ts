@@ -1,7 +1,9 @@
 'use strict'
 
-import Chapter from '../models/chapter'
+import validate from '../lib/middlewares/validate'
 import * as Router from 'koa-router'
+import { required } from '../lib/ajv'
+import Chapter, { getParagraph } from '../models/chapter'
 import { NotFoundError, ValidationFailureError } from '../lib/errors'
 
 const router = new Router()
@@ -67,6 +69,34 @@ router.get('chapter/:id/paragraph/:pid',
     if (result[0].data == null) throw new NotFoundError(`在第 ${_id} 章中没有 id 为 ${pid} 的段落`)
 
     ctx.result = result[0].data
+  }
+)
+
+router.patch('chapter/:id/paragraph/:pid',
+  validate({
+    translation: 'string',
+    tags: ['string']
+  }),
+  async (ctx, next) => {
+    const data = await getParagraph(ctx.params.id, ctx.params.pid)
+    if (data == null) throw new NotFoundError(`没有 id 为 ${ctx.params.id} 的章节`)
+    if (data.paragraph == null) throw new NotFoundError(`在第 ${ctx.params.id} 章中没有 id 为 ${ctx.params.pid} 的段落`)
+
+    const { chapter, paragraph } = data
+    const {
+      translation = paragraph.translation,
+      tags = paragraph.tags
+    } = ctx.request.body
+
+    Object.assign(paragraph, {
+      tags,
+      translation,
+      updated: new Date(),
+      unsaved: paragraph.unsaved || translation !== paragraph.translation
+    })
+
+    await chapter.save()
+    ctx.result = null
   }
 )
 

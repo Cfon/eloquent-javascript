@@ -75,4 +75,19 @@ schema.methods = {
   }
 } as ChapterMethods
 
-export default db.model<Chapter>('chapter', schema)
+const model = db.model<Chapter>('chapter', schema)
+export default model
+
+export async function getParagraph (id: number, pid: string) {
+  const chapter = await model.findById(id)
+  if (chapter) {
+    const paragraph = chapter.paragraphs.find(p => p._id === pid)
+    if (paragraph) {
+      return { chapter, paragraph }
+    }
+
+    return { chapter, paragraph: null }
+  }
+
+  return null
+}
