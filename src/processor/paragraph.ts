@@ -22,8 +22,10 @@ export default class Paragraph {
 
   history: ParagraphHistory[] = []
   tags: string[]
+
   created: Date
   updated: Date
+  unsaved: boolean
 
   constructor (input: string) {
     // parse translation and meta by line
@@ -125,5 +127,9 @@ export const paragraphSchema = new Schema({
   updated: {
     type: Date,
     default: () => new Date()
+  },
+  unsaved: {
+    type: Boolean,
+    default: false
   }
 }).loadClass(Paragraph)
