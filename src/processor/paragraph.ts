@@ -90,6 +90,17 @@ export default class Paragraph {
     return this.translation || this.source
   }
 
+  pushHistory (message: string) {
+    this.history.push({
+      source: this.source,
+      translation: this.translation,
+      message,
+      date: new Date()
+    })
+
+    return this
+  }
+
   /** Generate a random id using sha1 */
   private generateId () {
     return sha1(this.source + randomString(8))
