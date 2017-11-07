@@ -57,8 +57,7 @@ export function fromSchema (schema: Schema): any {
   const result = {
     type: 'object',
     properties: {} as any,
-    required: [] as string[],
-    additionalProperties: false
+    required: [] as string[]
   }
 
   Object.keys(schema).forEach(key => {
