@@ -8,7 +8,7 @@ import Paragraph, { paragraphSchema } from '../processor/paragraph'
 
 interface ChapterMethods {
   export (this: Chapter): Promise<void>,
-  updateParagraphs (this: Chapter, paragraphs: Paragraph[]): Promise<Chapter>
+  updateParagraphs (this: Chapter, paragraphs: Paragraph[], message: string): Promise<Chapter>
 }
 
 export interface Chapter extends Document, ChapterMethods {
@@ -46,7 +46,7 @@ schema.methods = {
   export () {
     return fs.writeFile(this.file, Paragraph.generateSource(this.paragraphs))
   },
-  async updateParagraphs (paragraphs) {
+  async updateParagraphs (paragraphs, message) {
     for (const paragraph of paragraphs) {
       const oldParagraph = this.paragraphs.find(p => p._id === paragraph._id)
       if (oldParagraph) {
@@ -59,8 +59,10 @@ schema.methods = {
         // record source content changes
         if (paragraph.source.replace(/\n/g, ' ') !== oldParagraph.source.replace(/\n/g, ' ')) {
           paragraph.updated = new Date()
-          paragraph.sourceVersions.push({
-            content: oldParagraph.source,
+          paragraph.history.push({
+            source: oldParagraph.source,
+            translation: oldParagraph.translation,
+            message,
             date: new Date()
           })
         }

@@ -3,8 +3,10 @@
 import { Schema, SchemaTypes } from 'mongoose'
 import { sha1, parseJSON, randomString } from '../lib/util'
 
-export interface ParagraphVersion {
-  content: string,
+export interface ParagraphHistory {
+  source: string,
+  translation: string,
+  message: string,
   date: Date
 }
 
@@ -15,12 +17,10 @@ export default class Paragraph {
   /** The original text of the paragraph */
   source: string
 
-  /** The versions of the source content. */
-  sourceVersions: ParagraphVersion[] = []
-
   /** The translation of the paragraph */
   translation: string
 
+  history: ParagraphHistory[] = []
   tags: string[]
   created: Date
   updated: Date
@@ -100,17 +100,19 @@ export const paragraphSchema = new Schema({
     type: String,
     default: ''
   },
-  sourceVersions: {
-    type: [{
-      _id: false,
-      content: String,
-      date: Date
-    }],
-    default: () => []
-  },
   translation: {
     type: String,
     default: ''
+  },
+  history: {
+    type: [{
+      _id: false,
+      source: String,
+      translation: String,
+      message: String,
+      date: Date
+    }],
+    default: () => []
   },
   tags: {
     type: [String],
