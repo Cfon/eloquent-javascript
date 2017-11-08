@@ -2,6 +2,7 @@
 
 import db from '../lib/db'
 import { Document, Schema } from 'mongoose'
+import { TagNotFoundError } from '../lib/errors'
 
 export interface Tag extends Document {
   _id: string,
@@ -18,4 +19,14 @@ export const schema = new Schema({
   toJSON: { versionKey: false }
 })
 
-export default db.model<Tag>('tag', schema)
+const model = db.model<Tag>('tag', schema)
+export default model
+
+export async function validateTags (tags: string[]) {
+  for (const tag of tags) {
+    const tagDocument = await model.findById(tag)
+    if (!tagDocument) {
+      throw new TagNotFoundError(tag)
+    }
+  }
+}

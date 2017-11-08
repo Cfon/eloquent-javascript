@@ -3,6 +3,7 @@
 import validate from '../lib/middlewares/validate'
 import * as Router from 'koa-router'
 import { required } from '../lib/ajv'
+import { validateTags } from '../models/tag'
 import Chapter, { getParagraph } from '../models/chapter'
 
 import {
@@ -92,6 +93,8 @@ router.patch('chapter/:chapter/paragraph/:paragraph',
       translation = paragraph.translation,
       tags = paragraph.tags
     } = ctx.request.body
+
+    await validateTags(tags)
 
     Object.assign(paragraph, {
       tags,
