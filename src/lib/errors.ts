@@ -27,7 +27,7 @@ export default class UserError extends Error {
 /** token 验证失败 */
 export class TokenAuthorizationError extends UserError {
   constructor () {
-    super('Invalid token', 100, 401)
+    super('无效的 token', 100, 401)
   }
 }
 
@@ -41,7 +41,7 @@ export class ValidationFailureError extends UserError {
 /** 未授权 */
 export class NotAuthorizedError extends UserError {
   constructor () {
-    super('Not Authorized', 102, 403)
+    super('未授权的请求', 102, 403)
   }
 }
 
@@ -70,5 +70,19 @@ export class ChapterNotFoundError extends NotFoundError {
 export class ParagraphNotFoundError extends NotFoundError {
   constructor (chapter: number, paragraph: string) {
     super(`在第 ${chapter} 章中没有 id 为 ${paragraph} 的段落`)
+  }
+}
+
+/** 标签未找到 */
+export class TagNotFoundError extends NotFoundError {
+  constructor (tag: string) {
+    super(`没有名字为 ${tag} 的标签`)
+  }
+}
+
+/** Git 错误 */
+export class GitError extends UserError {
+  constructor (message: string) {
+    super(message, 105, 500)
   }
 }
