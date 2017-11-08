@@ -28,7 +28,7 @@ export async function get (key: string, defaultValue?: any): Promise<any> {
 }
 
 export function set (key: string, value: any) {
-  return model.findByIdAndUpdate(key, { $set: { value } }).exec()
+  return model.findByIdAndUpdate(key, { $set: { value } }, { upsert: true }).exec()
 }
 
 export function remove (key: string) {
