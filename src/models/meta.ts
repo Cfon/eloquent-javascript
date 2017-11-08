@@ -20,11 +20,14 @@ const model = db.model<Meta>('meta', schema)
 
 export async function get (key: string, defaultValue?: any): Promise<any> {
   const doc = await model.findById(key)
-  if (doc) return doc.toObject()
-  else if (defaultValue !== undefined) {
+  if (doc) {
+    return (doc.toObject() as any).value
+  } else if (defaultValue !== undefined) {
     await set(key, defaultValue)
     return defaultValue
-  } else return null
+  } else {
+    return null
+  }
 }
 
 export function set (key: string, value: any) {
