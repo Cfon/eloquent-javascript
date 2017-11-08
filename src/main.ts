@@ -35,3 +35,5 @@ async function main () {
 
 process.on('uncaughtException', fatalErrorHandler('发生未处理的异常'))
 process.on('unhandledRejection', fatalErrorHandler('发生未处理的 Promise rejection'))
+
+main()
