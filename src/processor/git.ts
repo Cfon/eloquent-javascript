@@ -9,7 +9,7 @@ import * as path from 'path'
 import importFile from './import'
 import * as shelljs from 'shelljs'
 import { readFile } from 'mz/fs'
-import { MergeError } from '../lib/errors'
+import { GitError, MergeError } from '../lib/errors'
 
 const config = require('../../config')
 
@@ -22,7 +22,7 @@ export default function git (...args: string[]) {
     shelljs.exec('git ' + gitArgsString, (code, stdout, stderr) => {
       if (code) {
         logger.error(stderr || stdout)
-        reject(stderr || stdout)
+        reject(new GitError(stderr || stdout))
       } else {
         resolve(stdout)
       }
