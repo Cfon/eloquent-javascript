@@ -34,6 +34,13 @@ export function fetch () {
   return git('fetch', '--all')
 }
 
+export async function status () {
+  return (await git('status', '-s'))
+    .split('\n')
+    .map(s => s.split(/\s+/))
+    .map(s => ({ file: s[1], flag: s[0] }))
+}
+
 export async function currentBranch () {
   const result = await git('branch')
   return (result.split('\n').find(s => s.startsWith('*')) || '').slice(2)
@@ -59,22 +66,17 @@ export async function mergeRemote (message: string) {
     // ignore merge errors
     await git('merge', config.remote, '--no-ff', '--no-commit').catch(() => null)
 
-    // get the changed files list
-    const files = (await git('status', '-s'))
-      .split('\n')
-      .map(s => s.split(/\s+/))
-
     // merge all chapters
-    for (const [status, file] of files) {
+    for (const { file, flag } of await status()) {
       if (!/^[012].*\.md$/.test(file)) continue
 
       const fullPath = path.join(config.workDir, file)
       const chapterId = parseInt(file, 10)
 
       let paragraphs: Paragraph[] = []
-      if (status === 'UU') {
+      if (flag === 'UU') {
         paragraphs = await merge(fullPath)
-      } else if (status === 'M' || status === 'A') {
+      } else if (flag === 'M' || flag === 'A') {
         const input = await readFile(fullPath, 'utf8')
         paragraphs = parse(input)
       }
