@@ -2,9 +2,12 @@
 
 import app from './app'
 import Tag from './models/tag'
-import * as fs from 'fs'
-import * as http from 'http'
 import logger from './lib/logger'
+import * as fs from 'fs'
+import * as git from './processor/git'
+import * as http from 'http'
+import * as meta from './models/meta'
+import { scheduleJob } from 'node-schedule'
 
 const config = require('../config')
 const port = Number.parseInt(process.env.PORT || config.port || '3000')
@@ -20,6 +23,12 @@ function fatalErrorHandler (message: string) {
   }
 }
 
+// 规划任务的同时执行一次任务
+function schedule (rule: string, job: () => any) {
+  setTimeout(job, 0)
+  return scheduleJob(rule, job)
+}
+
 async function main () {
   server = http.createServer(app.callback())
   server.on('listening', () => logger.info(`Server started at port ${port}`))
@@ -29,6 +38,12 @@ async function main () {
   for (const tag of ['passed', 'ignored']) {
     await Tag.findByIdAndUpdate(tag, { $set: {} }, { upsert: true })
   }
+
+  // 每 30 分钟获取一次 git 仓库更新
+  schedule('*/30 * * * *', async () => {
+    await git.fetch()
+    await meta.set('commits-behind', (await git.getRemoteChangesCount()).behind)
+  })
 
   server.listen(port)
 }

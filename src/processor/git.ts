@@ -30,6 +30,10 @@ export default function git (...args: string[]) {
   })
 }
 
+export function fetch () {
+  return git('fetch', '--all')
+}
+
 export async function currentBranch () {
   const result = await git('branch')
   return (result.split('\n').find(s => s.startsWith('*')) || '').slice(2)
