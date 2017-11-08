@@ -1,6 +1,7 @@
 'use strict'
 
 import app from './app'
+import Tag from './models/tag'
 import * as fs from 'fs'
 import * as http from 'http'
 import logger from './lib/logger'
@@ -23,6 +24,12 @@ async function main () {
   server = http.createServer(app.callback())
   server.on('listening', () => logger.info(`Server started at port ${port}`))
   server.on('error', fatalErrorHandler('HTTP 服务器错误'))
+
+  // 确保数据库中存有下面这些最基本的标签
+  for (const tag of ['passed', 'ignored']) {
+    await Tag.findByIdAndUpdate(tag, { $set: {} }, { upsert: true })
+  }
+
   server.listen(port)
 }
 
