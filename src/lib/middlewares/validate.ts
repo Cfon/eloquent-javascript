@@ -20,7 +20,7 @@ export default function ValidateMiddlewareFactory (arg1: string | Schema, arg2?:
 
   const validator = ajv.compile(fromSchema(schema))
   return (function ValidateMiddleware (ctx, next) {
-    const data = (ctx as any)[target]
+    const data = target === 'body' ? ctx.request.body : (ctx as any)[target]
     if (data == null) throw new ValidationFailureError('Empty data')
     else if (validator(data)) return next()
     else throw new ValidationFailureError(ajv.errorsText(validator.errors as any))
