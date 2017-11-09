@@ -8,5 +8,9 @@ Vue.use(VueRouter)
 export default new VueRouter({
   base: '/eloquent-javascript/translator',
   mode: 'history',
-  routes: []
+  routes: [
+    { path: '/', component: require('../pages/index').default },
+    { path: '/chapters', component: require('../pages/chapters').default },
+    { path: '/tags', component: require('../pages/tags').default }
+  ]
 })
