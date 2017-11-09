@@ -27,6 +27,10 @@ export default class Paragraph {
   updated: Date
   unsaved: boolean
 
+  get lastHistory (): ParagraphHistory | null {
+    return this.history[this.history.length - 1]
+  }
+
   constructor (input: string) {
     // parse translation and meta by line
     const result: { [key: string]: string[] } = {
@@ -91,13 +95,22 @@ export default class Paragraph {
   }
 
   pushHistory (message: string) {
-    this.history.push({
-      source: this.source,
-      translation: this.translation,
-      message,
-      date: new Date()
-    })
+    if (
+      !this.lastHistory ||
+      this.lastHistory.translation !== this.translation ||
+      this.lastHistory.source !== this.source
+    ) {
+      this.history.push({
+        source: this.source,
+        translation: this.translation,
+        message,
+        date: new Date()
+      })
 
+      this.updated = new Date()
+    }
+
+    this.unsaved = false
     return this
   }
 
