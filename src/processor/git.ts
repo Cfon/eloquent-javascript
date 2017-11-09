@@ -30,6 +30,10 @@ export default function git (...args: string[]) {
   })
 }
 
+export function push (...args: string[]) {
+  return git('push', ...args)
+}
+
 export function fetch () {
   return git('fetch', '--all')
 }
@@ -39,6 +43,11 @@ export async function status () {
     .split('\n')
     .map(s => s.split(/\s+/))
     .map(s => ({ file: s[1], flag: s[0] }))
+}
+
+export async function commitAll (message: string) {
+  await git('add', '--all')
+  return git('commit', '-m', message)
 }
 
 export async function currentBranch () {
@@ -87,7 +96,7 @@ export async function mergeRemote (message: string) {
         await chapter.export()
       } else {
         // create new database record if the record is not exist
-        await importFile(fullPath)
+        await importFile(fullPath, message)
       }
 
       await git('add', file)
