@@ -36,4 +36,15 @@ router.patch('origin',
   }
 )
 
+router.patch('local',
+  validate({
+    message: required('string')
+  }),
+  async (ctx, next) => {
+    await git.fetch()
+    await git.mergeRemote(ctx.request.body.message)
+    ctx.result = null
+  }
+)
+
 export default router
