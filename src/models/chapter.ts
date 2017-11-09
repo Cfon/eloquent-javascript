@@ -7,7 +7,13 @@ import { Document, Model, Schema } from 'mongoose'
 import Paragraph, { paragraphSchema } from '../processor/paragraph'
 
 interface ChapterMethods {
+  /** 提交章节的更改 */
+  commit (this: Chapter, message: string): Promise<Boolean>,
+
+  /** 将一个章节的内容写入到文件中 */
   export (this: Chapter): Promise<void>,
+
+  /** 更新章节中所有段落的数据（通常伴随着合并提交） */
   updateParagraphs (this: Chapter, paragraphs: Paragraph[], message: string): Promise<Chapter>
 }
 
@@ -43,6 +49,22 @@ export const schema = new Schema({
 })
 
 schema.methods = {
+  async commit (message) {
+    let hasUnsaved = false
+    for (const paragraph of this.paragraphs) {
+      if (paragraph.unsaved) {
+        hasUnsaved = true
+        paragraph.pushHistory(message)
+      }
+    }
+
+    if (hasUnsaved) {
+      this.updated = new Date()
+      await this.save()
+    }
+
+    return hasUnsaved
+  },
   export () {
     return fs.writeFile(this.file, Paragraph.generateSource(this.paragraphs))
   },
@@ -78,6 +100,7 @@ schema.methods = {
 const model = db.model<Chapter>('chapter', schema)
 export default model
 
+/** 通过 id 获取某个章节的某个段落 */
 export async function getParagraph (id: number, pid: string) {
   const chapter = await model.findById(id)
   if (chapter) {
