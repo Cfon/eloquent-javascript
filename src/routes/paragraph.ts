@@ -100,7 +100,7 @@ router.patch('chapter/:chapter/paragraph/:paragraph',
       tags,
       translation,
       updated: new Date(),
-      unsaved: paragraph.unsaved || translation !== paragraph.translation
+      unsaved: paragraph.lastHistory ? paragraph.lastHistory.translation !== translation : true
     })
 
     await chapter.save()
