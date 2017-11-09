@@ -45,10 +45,10 @@ export class NotAuthorizedError extends UserError {
   }
 }
 
-/** 文件合并错误 */
-export class MergeError extends UserError {
+/** Git 错误 */
+export class GitError extends UserError {
   constructor (message: string) {
-    super(message, 103, 403)
+    super(message, 103, 500)
   }
 }
 
@@ -77,12 +77,5 @@ export class ParagraphNotFoundError extends NotFoundError {
 export class TagNotFoundError extends NotFoundError {
   constructor (tag: string) {
     super(`没有名字为 ${tag} 的标签`)
-  }
-}
-
-/** Git 错误 */
-export class GitError extends UserError {
-  constructor (message: string) {
-    super(message, 105, 500)
   }
 }

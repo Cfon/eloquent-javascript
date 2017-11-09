@@ -9,7 +9,7 @@ import * as path from 'path'
 import importFile from './import'
 import * as shelljs from 'shelljs'
 import { readFile } from 'mz/fs'
-import { GitError, MergeError } from '../lib/errors'
+import { GitError } from '../lib/errors'
 
 const config = require('../../config')
 
@@ -69,7 +69,7 @@ export async function getRemoteChangesCount () {
 export async function mergeRemote (message: string) {
   // make sure that it is not in middle of a merge
   await git('--no-pager', 'show', 'MERGE_HEAD')
-    .then(() => { throw new MergeError('There is another merge or rebase in progress') }, () => null)
+    .then(() => { throw new GitError('There is another merge or rebase in progress') }, () => null)
 
   try {
     // ignore merge errors
