@@ -1,7 +1,26 @@
 <template>
-  <v-app>
-    <v-navigation-drawer app></v-navigation-drawer>
-    <v-toolbar app></v-toolbar>
+  <v-app light>
+    <v-navigation-drawer v-model="drawer" light temporary app>
+      <v-card class="elevation-0" tile>
+        <v-card-media :src="cover" height="150px">
+          <v-container fill-height fluid>
+            <v-layout column>
+              <span class="subheading" style="font-weight: 500">Eloquent JavaScript</span>
+              <span class="body-1">Marijn Haverbeke</span>
+            </v-layout>
+          </v-container>
+        </v-card-media>
+      </v-card>
+      <v-list>
+        <v-nav-drawer-item icon="home" to="/" exact>总览</v-nav-drawer-item>
+        <v-nav-drawer-item icon="book" to="/chapters">章节</v-nav-drawer-item>
+        <v-nav-drawer-item icon="label" to="/tags">标签</v-nav-drawer-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-toolbar color="primary" app>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-title>Eloquent JavaScript</v-toolbar-title>
+    </v-toolbar>
     <main>
       <v-content>
         <v-container fluid>
@@ -14,11 +33,32 @@
 
 <script>
   export default {
-    data: () => ({})
+    data: () => ({
+      cover: require('./assets/nav-header.png'),
+      drawer: false
+    })
   }
 </script>
 
 <style lang="stylus">
+  @import '../node_modules/vuetify/src/stylus/settings/_colors'
+
+  $theme := {
+    primary: #FFD01D
+    accent: $amber.accent-4
+    secondary: $grey.darken-3
+    info: $blue.base
+    warning: $amber.base
+    error: $red.base
+    success: $green.base
+  }
+
   @import '../node_modules/vuetify/src/stylus/main'
+
+  a.list__tile--active
+    color: $theme.accent
+
+  .toolbar__title
+    user-select: none
 </style>
 
