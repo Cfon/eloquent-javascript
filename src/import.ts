@@ -2,6 +2,7 @@
 
 import Chapter from './models/chapter'
 import * as fs from 'mz/fs'
+import * as git from './processor/git'
 import * as path from 'path'
 import importFile from './processor/import'
 import * as _glob from 'glob'
@@ -15,8 +16,10 @@ const config = require('../config')
   await Chapter.remove({})
 
   for (const file of files) {
-    await importFile(file)
+    await importFile(file, '首次导入文件')
   }
+
+  await git.commitAll('首次导入文件')
 })().catch(err => {
   console.error(err)
   return 1
