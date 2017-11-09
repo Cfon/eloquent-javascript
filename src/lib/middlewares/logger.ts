@@ -6,10 +6,7 @@ import { dumpHttpRequest } from '../util'
 import { makeErrorResponse } from './api-responser'
 
 /** 判定为较慢响应的毫秒数 */
-const SLOW_RESPONSE = 300
-
-/** 判定为无法接受的响应的毫秒数 */
-const UNACCEPTABLE_RESPONSE = 1000
+const SLOW_RESPONSE = 500
 
 export default (async function LoggerMiddleware (ctx, next) {
   let error: any
@@ -28,12 +25,8 @@ export default (async function LoggerMiddleware (ctx, next) {
     if (ctx.body == null) {
       makeErrorResponse(ctx, error)
     }
-  } else if (time >= SLOW_RESPONSE && time < UNACCEPTABLE_RESPONSE) {
+  } else if (time >= SLOW_RESPONSE) {
     logLevel = 'warn'
-    messages.push('Warning: Response time is too long')
-  } else if (time >= UNACCEPTABLE_RESPONSE) {
-    logLevel = 'error'
-    messages.push('Error: Response time is unacceptable')
   }
 
   // 如果出错, 记录完整的HTTP请求
