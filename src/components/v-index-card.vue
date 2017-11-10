@@ -1,5 +1,5 @@
 <template functional>
-  <v-flex xs12 lg8>
+  <v-flex xs12 lg8 :id="props.id">
     <v-card class="index-card">
       <v-card-title>
         <v-layout align-center style="margin: 0">
