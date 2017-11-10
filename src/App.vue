@@ -23,9 +23,7 @@
     </v-toolbar>
     <main>
       <v-content>
-        <v-container fluid>
-          <router-view></router-view>
-        </v-container>
+        <router-view></router-view>
       </v-content>
     </main>
   </v-app>
@@ -44,6 +42,8 @@
 </script>
 
 <style lang="scss">
+  @import './assets/octicons.scss';
+
   .toolbar__title, .title-author {
     user-select: none;
   }
