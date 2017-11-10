@@ -36,7 +36,10 @@
     data: () => ({
       drawer: false,
       navHeaderCover: require('./assets/nav-header.png')
-    })
+    }),
+    mounted () {
+      this.fetchData()
+    }
   }
 </script>
 
