@@ -42,7 +42,7 @@ async function main () {
   // 每 30 分钟获取一次 git 仓库更新
   schedule('*/30 * * * *', async () => {
     await git.fetch()
-    await meta.set('commits-behind', (await git.getRemoteChangesCount()).behind)
+    await meta.set('origin', await git.remoteChanges())
   })
 
   server.listen(port)

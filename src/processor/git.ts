@@ -55,15 +55,20 @@ export async function currentBranch () {
   return (result.split('\n').find(s => s.startsWith('*')) || '').slice(2)
 }
 
-export async function getRemoteChangesCount () {
+export async function remoteChanges () {
   const branch = await currentBranch()
-  const result = await git('rev-list', '--left-right', '--count', `${branch}...${config.remote}`)
-  const counts = result.split(/\s+/).map(s => Number(s))
+  const commitsRaw = await git('rev-list', '--left-right', `${branch}...${config.remote}`)
+  const commits = commitsRaw.split('\n').filter(s => s[0] === '>').map(s => s.slice(1))
 
-  return {
-    ahead: counts[0],
-    behind: counts[1]
+  const result: { hash: string, message: string }[] = []
+  for (const hash of commits) {
+    result.push({
+      hash,
+      message: (await git('--no-pager', 'log', '--format=%B', '-n', '1', hash)).trim()
+    })
   }
+
+  return result
 }
 
 export async function mergeRemote (message: string) {

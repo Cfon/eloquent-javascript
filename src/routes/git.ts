@@ -9,9 +9,9 @@ import { required } from '../lib/ajv'
 
 const router = new Router()
 
-router.get('commits-behind',
+router.get('origin',
   async (ctx, next) => {
-    ctx.result = await meta.get('commits-behind')
+    ctx.result = await meta.get('origin')
   }
 )
 
