@@ -40,25 +40,9 @@
   }
 </script>
 
-<style lang="stylus">
-  @import '../node_modules/vuetify/src/stylus/settings/_colors'
-
-  $theme := {
-    primary: #FFD01D
-    accent: $amber.accent-4
-    secondary: $grey.darken-3
-    info: $blue.base
-    warning: $amber.base
-    error: $red.base
-    success: $green.base
+<style lang="scss">
+  .toolbar__title {
+    user-select: none;
   }
-
-  @import '../node_modules/vuetify/src/stylus/main'
-
-  a.list__tile--active
-    color: $theme.accent
-
-  .toolbar__title
-    user-select: none
 </style>
 

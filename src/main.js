@@ -1,5 +1,7 @@
 'use strict'
 
+import './assets/theme.styl'
+
 import Vue from 'vue'
 import App from './App'
 import store from './store'
