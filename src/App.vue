@@ -1,10 +1,10 @@
 <template>
   <v-app light>
-    <v-navigation-drawer v-model="drawer" light temporary app>
+    <v-navigation-drawer v-model="drawer" enable-resize-watcher light persistent app>
       <v-card class="elevation-0" tile>
-        <v-card-media :src="cover" height="150px">
+        <v-card-media :src="navHeaderCover" height="150px">
           <v-container fill-height fluid>
-            <v-layout column>
+            <v-layout column class="title-author">
               <span class="subheading" style="font-weight: 500">Eloquent JavaScript</span>
               <span class="body-1">Marijn Haverbeke</span>
             </v-layout>
@@ -18,7 +18,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="primary" app>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon class="toggle-drawer" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>Eloquent JavaScript</v-toolbar-title>
     </v-toolbar>
     <main>
@@ -34,15 +34,21 @@
 <script>
   export default {
     data: () => ({
-      cover: require('./assets/nav-header.png'),
-      drawer: false
+      drawer: false,
+      navHeaderCover: require('./assets/nav-header.png')
     })
   }
 </script>
 
 <style lang="scss">
-  .toolbar__title {
+  .toolbar__title, .title-author {
     user-select: none;
+  }
+
+  @media (min-width: 1264px) {
+    .toggle-drawer {
+      display: none;
+    }
   }
 </style>
 
