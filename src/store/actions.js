@@ -4,7 +4,7 @@ import { axios } from '../lib/axios'
 
 export default {
   async fetchData ({ commit }) {
-    const promise = Promise.all(['tags', 'chapters', 'commits-behind'].map(s => axios.get(s)))
+    const promise = Promise.all(['tags', 'chapters', 'origin'].map(s => axios.get(s)))
     commit('START_FETCH', promise)
 
     const [tags, chapters, commitsBehind] = await promise
