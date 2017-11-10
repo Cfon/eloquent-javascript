@@ -14,7 +14,7 @@ const rewrite = require('koa-rewrite')
 const app = new Koa()
 app.use(LoggerMiddleware)
 app.use(bodyParser())
-app.use(rewrite(`/eloquent-javascript/translator/*`, '/$1'))
+app.use(rewrite(`/eloquent-javascript/translator/(.*)`, '/$1'))
 app.use(ApiResponserMiddleware)
 app.use(router.prefix('/api').routes())
 
