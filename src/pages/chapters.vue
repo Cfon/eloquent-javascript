@@ -4,7 +4,7 @@
       v-for="(chapter, index) in chapters"
       :key="chapter._id"
       :class="{ unsaved: !!chapter.unsaved }"
-      :to="'/chapters/' + chapter._id"
+      :to="'/chapter/' + chapter._id"
     >
       <v-list-tile-content>
         <v-list-tile-title :class="{ 'bold': chapter.unsaved }">
