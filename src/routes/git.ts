@@ -36,6 +36,7 @@ router.patch('origin',
   }
 )
 
+// Pull
 router.patch('local',
   validate({
     message: required('string')
@@ -43,6 +44,7 @@ router.patch('local',
   async (ctx, next) => {
     await git.fetch()
     await git.mergeRemote(ctx.request.body.message)
+    await meta.set('origin', await git.remoteChanges())
     ctx.result = null
   }
 )
