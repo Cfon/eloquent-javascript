@@ -10,8 +10,13 @@
 <script>
   import LocalCard from 'partials/local-card'
   import RemoteCard from 'partials/remote-card'
+  import AppTitleMixin from 'mixins/app-title'
 
   export default {
+    mixins: [AppTitleMixin],
+    data: () => ({
+      appTitle: '总览'
+    }),
     components: {
       LocalCard,
       RemoteCard

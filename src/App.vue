@@ -19,30 +19,54 @@
     </v-navigation-drawer>
     <v-toolbar color="primary" app>
       <v-toolbar-side-icon class="toggle-drawer" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Eloquent JavaScript</v-toolbar-title>
+      <transition name="fade" mode="out-in">
+        <v-toolbar-title v-if="showTitle">{{ title }}</v-toolbar-title>
+      </transition>
     </v-toolbar>
     <main>
       <v-content>
-        <router-view></router-view>
+        <transition name="fade" mode="out-in">
+          <router-view></router-view>
+        </transition>
       </v-content>
     </main>
   </v-app>
 </template>
 
 <script>
+  import { titleEvent } from 'mixins/app-title'
+
   export default {
     data: () => ({
+      title: 'Eloquent JavaScript',
+      showTitle: true,
       drawer: false,
       navHeaderCover: require('./assets/nav-header.png')
     }),
     mounted () {
       this.fetchData()
+
+      titleEvent.$on('routeEnter', title => {
+        this.title = title
+        this.showTitle = true
+      })
+
+      titleEvent.$on('routeLeave', () => { this.showTitle = false })
+      titleEvent.$on('titleChanged', title => { this.title = title })
     }
   }
 </script>
 
 <style lang="scss">
   @import './assets/octicons.scss';
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.3s;
+  }
+
+  .fade-enter, .fade-leave-active {
+    opacity: 0;
+  }
 
   .toolbar__title, .title-author {
     user-select: none;

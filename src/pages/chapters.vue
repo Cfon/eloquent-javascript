@@ -23,8 +23,13 @@
 
 <script>
   import { datetimeToString } from '../lib/util'
+  import AppTitleMixin from 'mixins/app-title'
 
   export default {
+    mixins: [AppTitleMixin],
+    data: () => ({
+      appTitle: '章节'
+    }),
     computed: {
       progresses () {
         return this.chapters.map(chapter => {
