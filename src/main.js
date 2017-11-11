@@ -17,6 +17,8 @@ Vue.use(VuetifyHelper)
 Vue.mixin(VuexMixin)
 Vue.config.productionTip = false
 
+store.dispatch('fetchData')
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -44,8 +44,6 @@
       navHeaderCover: require('../assets/nav-header.png')
     }),
     mounted () {
-      this.fetchData()
-
       titleEvent.$on('routeEnter', title => {
         this.title = title
         this.showTitle = true
