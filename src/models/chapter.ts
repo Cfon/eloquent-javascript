@@ -80,6 +80,17 @@ schema.methods = {
 
         // record source content changes
         if (paragraph.source.replace(/\n/g, ' ') !== oldParagraph.source.replace(/\n/g, ' ')) {
+          // update tags
+          let passed: number
+          if ((passed = paragraph.tags.indexOf('passed')) !== -1) {
+            paragraph.tags.splice(passed, 1)
+          }
+
+          if (!paragraph.tags.includes('updated')) {
+            paragraph.tags.push('updated')
+          }
+
+          // write history
           paragraph.updated = new Date()
           paragraph.history.push({
             source: oldParagraph.source,
