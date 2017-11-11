@@ -1,13 +1,13 @@
 'use strict'
 
 import app from './app'
-import Tag from './models/tag'
 import logger from './lib/logger'
 import * as fs from 'fs'
 import * as git from './processor/git'
 import * as http from 'http'
 import * as meta from './models/meta'
 import { scheduleJob } from 'node-schedule'
+import { ensureBasicTags } from './models/tag'
 
 const config = require('../config')
 const port = Number.parseInt(process.env.PORT || config.port || '3000')
@@ -35,9 +35,7 @@ async function main () {
   server.on('error', fatalErrorHandler('HTTP 服务器错误'))
 
   // 确保数据库中存有下面这些最基本的标签
-  for (const tag of ['passed', 'ignored']) {
-    await Tag.findByIdAndUpdate(tag, { $set: {} }, { upsert: true })
-  }
+  await ensureBasicTags()
 
   // 每 30 分钟获取一次 git 仓库更新
   schedule('*/30 * * * *', async () => {

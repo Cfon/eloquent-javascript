@@ -30,3 +30,18 @@ export async function validateTags (tags: string[]) {
     }
   }
 }
+
+export async function ensureBasicTags () {
+  const basicTags = [
+    { _id: 'ignored', title: '已忽略', color: '#424242' },
+    { _id: 'passed', title: '已完成', color: '#4CAF50' },
+    { _id: 'updated', title: '有更新', color: '#FFC107' }
+  ]
+
+  for (const tag of basicTags) {
+    const doc = await model.findById(tag._id)
+    if (!doc) {
+      await new model(tag).save()
+    }
+  }
+}
