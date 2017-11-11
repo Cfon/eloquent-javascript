@@ -8,7 +8,12 @@ export default {
     const promise = Promise.all(promises).then(result => {
       if (result.every(item => item.status === 200)) {
         const [tags, chapters, commitsBehind] = result
-        commit('SET_TAGS', tags.data)
+
+        commit('SET_TAGS', tags.data.reduce((tags, tag) => {
+          tags[tag._id] = tag
+          return tags
+        }, {}))
+
         commit('SET_CHAPTERS', chapters.data)
         commit('SET_COMMITS_BEHIND', commitsBehind.data)
       } else {
