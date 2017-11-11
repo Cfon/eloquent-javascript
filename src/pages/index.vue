@@ -1,25 +1,80 @@
 <template>
-  <v-container grid-list-xl>
-    <v-layout row wrap justify-center>
-      <remote-card v-if="commitsBehind.length"></remote-card>
-      <local-card v-if="unsavedCount"></local-card>
-    </v-layout>
-  </v-container>
+  <v-app id="index" light>
+    <v-navigation-drawer v-model="drawer" enable-resize-watcher light persistent app>
+      <v-card class="elevation-0" tile>
+        <v-card-media :src="navHeaderCover" height="150px">
+          <v-container fill-height fluid>
+            <v-layout column class="title-author">
+              <span class="subheading" style="font-weight: 500">Eloquent JavaScript</span>
+              <span class="body-1">Marijn Haverbeke</span>
+            </v-layout>
+          </v-container>
+        </v-card-media>
+      </v-card>
+      <v-list>
+        <v-nav-drawer-item icon="home" to="/overview" exact>总览</v-nav-drawer-item>
+        <v-nav-drawer-item icon="book" to="/chapters">章节</v-nav-drawer-item>
+        <v-nav-drawer-item icon="label" to="/tags">标签</v-nav-drawer-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-toolbar color="primary" app>
+      <v-toolbar-side-icon class="hidden-sm-and-up" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <transition name="fade" mode="out-in">
+        <v-toolbar-title v-if="showTitle">{{ title }}</v-toolbar-title>
+      </transition>
+    </v-toolbar>
+    <main>
+      <v-content>
+        <transition name="fade" mode="out-in">
+          <router-view></router-view>
+        </transition>
+      </v-content>
+    </main>
+  </v-app>
 </template>
 
 <script>
-  import LocalCard from 'partials/local-card'
-  import RemoteCard from 'partials/remote-card'
-  import AppTitleMixin from 'mixins/app-title'
+  import { titleEvent } from 'mixins/index-title'
 
   export default {
-    mixins: [AppTitleMixin],
     data: () => ({
-      appTitle: '总览'
+      title: 'Eloquent JavaScript',
+      showTitle: true,
+      drawer: false,
+      navHeaderCover: require('../assets/nav-header.png')
     }),
-    components: {
-      LocalCard,
-      RemoteCard
+    mounted () {
+      this.fetchData()
+
+      titleEvent.$on('routeEnter', title => {
+        this.title = title
+        this.showTitle = true
+      })
+
+      titleEvent.$on('routeLeave', () => { this.showTitle = false })
+      titleEvent.$on('titleChanged', title => { this.title = title })
     }
   }
 </script>
+
+<style lang="scss">
+  #index {
+    .toolbar {
+      z-index: 1;
+    }
+
+    & > main {
+      position: relative;
+      z-index: 0;
+    }
+
+    .content {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    }
+  }
+</style>

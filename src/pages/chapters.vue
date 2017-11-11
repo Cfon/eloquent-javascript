@@ -23,10 +23,10 @@
 
 <script>
   import { datetimeToString } from '../lib/util'
-  import AppTitleMixin from 'mixins/app-title'
+  import IndexTitleMixin from 'mixins/index-title'
 
   export default {
-    mixins: [AppTitleMixin],
+    mixins: [IndexTitleMixin],
     data: () => ({
       appTitle: '章节'
     }),
