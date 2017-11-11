@@ -8,12 +8,12 @@ export default {
   data: () => ({
     appTitle: 'Eloquent JavaScript'
   }),
-  beforeRouteEnter (from, to, next) {
+  beforeRouteEnter (to, from, next) {
     next(vm => {
       titleEvent.$emit('routeEnter', vm.appTitle)
     })
   },
-  beforeRouteLeave (from, to, next) {
+  beforeRouteLeave (to, from, next) {
     titleEvent.$emit('routeLeave')
     next()
   },
