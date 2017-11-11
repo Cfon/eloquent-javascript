@@ -48,6 +48,16 @@
     user-select: none;
   }
 
+  .application {
+    height: 100vh;
+    overflow: hidden;
+
+    & > main {
+      flex-basis: 100%;
+      overflow: auto;
+    }
+  }
+
   @media (min-width: 1264px) {
     .toggle-drawer {
       display: none;
