@@ -14,7 +14,7 @@ router.get('chapters',
         title: 1,
         updated: 1,
         paragraphs: { $size: '$paragraphs' },
-        passed: { $size: { $filter: { input: '$paragraphs', as: 'p', cond: { $in: ['padded', '$$p.tags'] } } } },
+        passed: { $size: { $filter: { input: '$paragraphs', as: 'p', cond: { $in: ['passed', '$$p.tags'] } } } },
         unsaved: { $size: { $filter: { input: '$paragraphs', as: 'p', cond: { $eq: ['$$p.unsaved', true] } } } }
       }
     }])
