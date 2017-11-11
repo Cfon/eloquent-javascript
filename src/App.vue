@@ -29,6 +29,24 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+
+    .toolbar {
+      z-index: 1;
+    }
+
+    & > main {
+      position: relative;
+      z-index: 0;
+
+      & > .content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+      }
+    }
   }
 </style>
 
