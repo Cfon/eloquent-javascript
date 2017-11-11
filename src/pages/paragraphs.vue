@@ -72,6 +72,7 @@
         // checkChapterId 只在路由进入时调用,
         // 所以在这里加入一些初始化代码
         this.id = this.paramId
+        this.paragraphs = []
         this.page = 0
         return true
       }
