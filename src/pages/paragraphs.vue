@@ -1,5 +1,5 @@
 <template>
-  <v-app id="paragraph" light>
+  <v-app id="paragraphs" light>
     <v-toolbar color="primary" app>
       <v-btn @click="$router.back()" icon><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>{{ chapter.title }}</v-toolbar-title>
@@ -85,7 +85,7 @@
 </script>
 
 <style lang="scss">
-  #paragraph {
+  #paragraphs {
     .paragraph-index {
       min-width: 0;
       display: flex;

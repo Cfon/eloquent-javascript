@@ -21,6 +21,10 @@
     user-select: none;
   }
 
+  .bold {
+    font-weight: bold;
+  }
+
   .top-level-page {
     position: absolute;
     z-index: 0;
@@ -45,6 +49,26 @@
         width: 100%;
         height: 100%;
         overflow: auto;
+      }
+    }
+  }
+
+  #chapters, #paragraphs {
+    .list__tile__title {
+      font-size: 16px;
+    }
+
+    .list__tile__sub-title {
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .list__tile__title {
+        font-size: 14px;
+      }
+
+      .list__tile__sub-title {
+        font-size: 12px;
       }
     }
   }

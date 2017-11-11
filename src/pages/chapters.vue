@@ -54,27 +54,5 @@
     .unsaved {
       background-color: fade($primary, 0.15);
     }
-
-    .bold {
-      font-weight: bold;
-    }
-
-    .list__tile__title {
-      font-size: 16px;
-    }
-
-    .list__tile__sub-title {
-      font-size: 14px;
-    }
-
-    @media (max-width: 600px) {
-      .list__tile__title {
-        font-size: 14px;
-      }
-
-      .list__tile__sub-title {
-        font-size: 12px;
-      }
-    }
   }
 </style>
