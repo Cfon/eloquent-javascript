@@ -13,6 +13,9 @@ interface ChapterMethods {
   /** 将一个章节的内容写入到文件中 */
   export (this: Chapter): Promise<void>,
 
+  /** 更新章节标题 */
+  updateTitle (this: Chapter): string
+
   /** 更新章节中所有段落的数据（通常伴随着合并提交） */
   updateParagraphs (this: Chapter, paragraphs: Paragraph[], message: string): Promise<Chapter>
 }
@@ -67,6 +70,19 @@ schema.methods = {
   },
   export () {
     return fs.writeFile(this.file, Paragraph.generateSource(this.paragraphs))
+  },
+  updateTitle () {
+    let title = this.title || ''
+
+    for (const paragraph of this.paragraphs) {
+      const content = paragraph.getTranslation()
+      if (content.startsWith('# ')) {
+        title = content.slice(2)
+        break
+      }
+    }
+
+    return title
   },
   async updateParagraphs (paragraphs, message) {
     for (const paragraph of paragraphs) {

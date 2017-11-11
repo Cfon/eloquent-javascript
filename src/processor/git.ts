@@ -98,6 +98,7 @@ export async function mergeRemote (message: string) {
       const chapter = await Chapter.findById(chapterId)
       if (chapter) {
         await chapter.updateParagraphs(paragraphs, message)
+        chapter.updateTitle()
         await chapter.export()
       } else {
         // create new database record if the record is not exist

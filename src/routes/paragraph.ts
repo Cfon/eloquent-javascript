@@ -103,6 +103,7 @@ router.patch('chapter/:chapter/paragraph/:paragraph',
       unsaved: paragraph.lastHistory ? paragraph.lastHistory.translation !== translation : true
     })
 
+    chapter.updateTitle()
     await chapter.save()
     ctx.result = null
   }

@@ -14,13 +14,11 @@ export default async function importFile (file: string, message: string = 'é¦–æ¬
   let title: string = ''
   for (const paragraph of paragraphs) {
     paragraph.pushHistory(message)
-
-    const translation = paragraph.getTranslation()
-    if (translation.startsWith('# ')) {
-      title = translation.slice(2)
-    }
   }
 
+  const chapter = await new Chapter({ _id, file, title, paragraphs })
+  chapter.updateTitle()
+
   await fs.writeFile(file, Paragraph.generateSource(paragraphs))
-  return new Chapter({ _id, file, title, paragraphs }).save()
+  return chapter.save()
 }
