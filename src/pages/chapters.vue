@@ -7,9 +7,9 @@
       :to="'/chapters/' + chapter._id"
     >
       <v-list-tile-content>
-        <v-list-tile-title :class="{ 'body-2': chapter.unsaved }">
+        <v-list-tile-title :class="{ 'bold': chapter.unsaved }">
           <span>{{ chapter._id }}. {{ chapter.title }}</span><!--
-       --><span v-if="chapter.unsaved">*</span>
+      --><span v-if="chapter.unsaved">*</span>
         </v-list-tile-title>
         <v-list-tile-sub-title>{{ datetimeToString(chapter.updated) }}</v-list-tile-sub-title>
       </v-list-tile-content>
@@ -53,6 +53,10 @@
 
     .unsaved {
       background-color: fade($primary, 0.15);
+    }
+
+    .bold {
+      font-weight: bold;
     }
 
     .list__tile__title {
