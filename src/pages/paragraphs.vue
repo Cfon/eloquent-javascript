@@ -48,7 +48,7 @@
       id: null,       // 切换路由时 paramId 会变为 undefined, 所以要缓存一下 id
       page: 0,
       count: -1,
-      loading: false,
+      loading: true,
       paragraphs: []
     }),
     computed: {
@@ -81,7 +81,7 @@
         }
       },
       async checkChapterId () {
-        await this.loading
+        await this.fetching
 
         if (!this.chapters[this.paramId]) {
           this.$router.replace('/chapters')
@@ -91,8 +91,10 @@
         // checkChapterId 只在路由进入时调用,
         // 所以在这里加入一些初始化代码
         this.id = this.paramId
+        this.loading = false
         this.paragraphs = []
         this.page = 0
+
         return true
       }
     },
