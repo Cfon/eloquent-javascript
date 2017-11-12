@@ -12,10 +12,15 @@ function parseMeta (meta) {
       meta = meta.slice(2)
     }
 
-    const { tag, args } = parseData(meta)
-    const pjson = meta.slice(meta.indexOf(' ') + 1).trim()
+    const data = parseData(meta)
+    if (data) {
+      const { tag, args } = parseData(meta)
+      const pjson = meta.slice(meta.indexOf(' ') + 1).trim()
 
-    return { tag, args, pjson }
+      return { tag, args, pjson }
+    } else {
+      return { tag: null }
+    }
   }
 }
 
@@ -53,7 +58,7 @@ export default async function generateDescription ({ source }) {
           html += `<code>${data}</code>`
         }
       } else {
-        html = `<i>未知元数据</i>：${tag}`
+        html = `<i>未知元数据</i>`
       }
     } else if (tag === 'quote') {
       data = args[0]
