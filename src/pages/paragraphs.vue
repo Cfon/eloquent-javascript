@@ -15,7 +15,14 @@
                 <v-list-tile-avatar size="36px" class="paragraph-index primary">{{ paragraph.index + 1 }}</v-list-tile-avatar>
               </v-badge>
               <v-list-tile-content>
-                <v-list-tile-title :class="{ expanded: !paragraph.tags.length }">{{ paragraph.source }}</v-list-tile-title>
+                <v-list-tile-title
+                  v-if="paragraph.type === 'unknown'"
+                  :class="{ expanded: !paragraph.tags.length }"
+                >{{ paragraph.source }}</v-list-tile-title>
+                <v-list-tile-title
+                  v-else v-html="paragraph.html"
+                  :class="{ expanded: !paragraph.tags.length }"
+                />
                 <v-list-tile-sub-title>
                   <v-chip class="white--text" small disabled
                     v-for="tag in paragraph.tags"
@@ -57,6 +64,11 @@
           const url = `chapter/${this.id}/paragraphs/${++this.page}`
           const { items, count } = (await this.$http.get(url)).data
 
+          const generateDescription = (await import(/* webpackChunkName: "markdown" */ '../lib/paragraph')).default
+          for (const item of items) {
+            Object.assign(item, await generateDescription(item))
+          }
+
           this.count = count
           this.paragraphs = this.paragraphs.concat(items)
         }
@@ -87,6 +99,13 @@
 
 <style lang="scss">
   #paragraphs {
+    code {
+      display: inline;
+      font-family: Inconsolata, monospace;
+      font-size: 14px;
+      font-weight: normal;
+    }
+
     .paragraph-index {
       min-width: 0;
       display: flex;
