@@ -9,6 +9,10 @@
 <style lang="scss">
   @import './assets/octicons.scss';
 
+  code, kbd, pre, samp {
+    font-family: Inconsolata, monospace;
+  }
+
   .fade-enter-active, .fade-leave-active {
     transition: opacity 0.3s;
   }

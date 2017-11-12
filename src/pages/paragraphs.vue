@@ -118,7 +118,6 @@
 <style lang="scss">
   #paragraphs {
     code {
-      font-family: Inconsolata, monospace;
       font-size: 14px;
       font-weight: normal;
 
