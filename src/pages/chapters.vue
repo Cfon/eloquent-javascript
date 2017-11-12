@@ -33,7 +33,7 @@
     computed: {
       progresses () {
         return this.chapters.map(chapter => {
-          return Math.round(chapter.passed / chapter.paragraphs * 100) / 100
+          return Math.round(chapter.passed / chapter.paragraphs * 10000) / 100
         })
       }
     },
