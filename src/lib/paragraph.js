@@ -30,6 +30,8 @@ export default async function generateDescription ({ source }) {
       html = `<i>章节标题</i>：${source.slice(2)}`
     } else if (source.startsWith('## ')) {
       html = `<i>小节标题</i>：${source.slice(3)}`
+    } else if (source.startsWith('### ')) {
+      html = `<i>三级标题</i>：${source.slice(4)}`
     }
   } else if (source.startsWith('{{')) {
     const { tag, args, pjson } = parseMeta(source)
