@@ -113,7 +113,7 @@ function renderArray (tokens) {
 }
 
 export default function render (src) {
-  const tokens = require('./markdown').parse(src, {})
+  const tokens = require('./markdown').default.parse(src, {})
   const result = transformTokens(tokens, {
     defined: ['interactive', 'html'],
     ids: true,

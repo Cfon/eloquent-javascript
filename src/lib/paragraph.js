@@ -2,15 +2,7 @@
 
 import render from './markdown'
 import escape from 'escape-html'
-import * as PJSON from './markdown/pseudo_json'
-
-function pseudoParse (pjson) {
-  try {
-    return PJSON.parse(pjson)
-  } catch (err) {
-    return null
-  }
-}
+import { parseData } from './markdown/markdown'
 
 function parseMeta (meta) {
   if (meta.startsWith('{{')) {
@@ -20,15 +12,10 @@ function parseMeta (meta) {
       meta = meta.slice(2)
     }
 
-    const firstWhitespace = meta.indexOf(' ')
-    const tag = meta.slice(0, firstWhitespace)
+    const { tag, args } = parseData(meta)
+    const pjson = meta.slice(meta.indexOf(' ') + 1).trim()
 
-    let pjson = meta.slice(firstWhitespace + 1)
-    if (tag === 'index') {
-      pjson = `[${pjson}]`
-    }
-
-    return { tag, pjson }
+    return { tag, args, pjson }
   }
 }
 
@@ -40,8 +27,8 @@ export default async function generateDescription ({ source }) {
     html = `<i>章节标题</i>：${source.slice(2)}`
     data = null
   } else if (source.startsWith('{{')) {
-    const { tag, pjson } = parseMeta(source)
-    data = pseudoParse(pjson)
+    const { tag, args, pjson } = parseMeta(source)
+    data = args
     type = 'meta'
 
     if (source.endsWith('}}')) {
@@ -49,9 +36,10 @@ export default async function generateDescription ({ source }) {
         html = `<i>元数据</i>：<code>${pjson}</code>`
       } else if (tag === 'figure') {
         type = 'image'
+        data = args[0]
         html = `<i>图片</i>：${data.alt}`
-      } else if (tag === 'index') {
-        html = `<i>索引</i>：`
+      } else if (tag === 'index' || tag === 'indexsee') {
+        html = `<i>${tag === 'index' ? '索引' : '另请参见'}</i>：`
         if (Array.isArray(data)) {
           html += data.map(x => `<code>${x}</code>`).join(' ')
         } else {
@@ -59,7 +47,8 @@ export default async function generateDescription ({ source }) {
         }
       }
     } else if (tag === 'quote') {
-      html = `<i>引用 ${data.author} &lt;${data.title}&gt;</i>`
+      data = args[0]
+      html = `<i>引用</i>： ${data.author} ${data.title ? `&lt;${data.title}&gt;` : ''}`
     }
   } else if (source.endsWith('}}')) {
     const tag = source.slice(0, -2)
@@ -76,6 +65,8 @@ export default async function generateDescription ({ source }) {
 
     if (html.startsWith('<p>')) {
       html = html.slice(3, -4)
+    } else if (html.startsWith('<pre')) {
+      // Do nothing
     } else {
       type = 'unknown'
       html = `<code>${escape(source)}</code>`
