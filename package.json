@@ -12,6 +12,10 @@
   },
   "dependencies": {
     "axios": "^0.17.0",
+    "codemirror": "^5.31.0",
+    "markdown-it": "^8.4.0",
+    "markdown-it-sub": "^1.0.0",
+    "markdown-it-sup": "^1.0.0",
     "vue": "^2.5.3",
     "vue-router": "^3.0.1",
     "vuetify": "^0.16.9",
