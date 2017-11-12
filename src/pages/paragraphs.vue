@@ -101,7 +101,6 @@
     mounted () {
       const el = this.$el.querySelector('#paragraphs-list')
       el.addEventListener('scroll', () => {
-        console.log(el.scrollTop, el.getBoundingClientRect().height, el.scrollHeight - 100)
         if (el.scrollTop + el.getBoundingClientRect().height > el.scrollHeight - 100) {
           this.fetch()
         }
