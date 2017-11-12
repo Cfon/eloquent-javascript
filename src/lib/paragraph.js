@@ -22,10 +22,15 @@ function parseMeta (meta) {
 export default async function generateDescription ({ source }) {
   let type = 'paragraph', html = '', data = {}
 
-  if (source.startsWith('# ')) {
-    type = 'chapter-title'
-    html = `<i>章节标题</i>：${source.slice(2)}`
+  if (source.startsWith('#')) {
+    type = 'heading'
     data = null
+
+    if (source.startsWith('# ')) {
+      html = `<i>章节标题</i>：${source.slice(2)}`
+    } else if (source.startsWith('## ')) {
+      html = `<i>小节标题</i>：${source.slice(3)}`
+    }
   } else if (source.startsWith('{{')) {
     const { tag, args, pjson } = parseMeta(source)
     data = args
