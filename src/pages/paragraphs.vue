@@ -118,10 +118,13 @@
 <style lang="scss">
   #paragraphs {
     code {
-      display: inline;
       font-family: Inconsolata, monospace;
       font-size: 14px;
       font-weight: normal;
+
+      &.inline {
+        display: inline;
+      }
     }
 
     .paragraph-index {

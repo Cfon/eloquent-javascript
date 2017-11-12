@@ -38,7 +38,7 @@ export default async function generateDescription ({ source }) {
 
     if (source.endsWith('}}')) {
       if (tag === 'meta') {
-        html = `<i>元数据</i>：<code>${pjson}</code>`
+        html = `<i>元数据</i>：<code class="inline">${pjson}</code>`
       } else if (tag === 'figure') {
         type = 'image'
         data = args[0]
@@ -50,6 +50,8 @@ export default async function generateDescription ({ source }) {
         } else {
           html += `<code>${data}</code>`
         }
+      } else {
+        html = `<i>未知元数据</i>：${tag}`
       }
     } else if (tag === 'quote') {
       data = args[0]
@@ -74,7 +76,7 @@ export default async function generateDescription ({ source }) {
       // Do nothing
     } else {
       type = 'unknown'
-      html = `<code>${escape(source)}</code>`
+      html = `<code class="inline">${escape(source)}</code>`
     }
   }
 
