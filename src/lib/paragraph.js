@@ -53,14 +53,14 @@ export default async function generateDescription ({ source }) {
       }
     } else if (tag === 'quote') {
       data = args[0]
-      html = `<i>引用</i>： ${data.author} ${data.title ? `&lt;${data.title}&gt;` : ''}`
+      html = `<i>引用块开始</i>： ${data.author} ${data.title ? `&lt;${data.title}&gt;` : ''}`
     }
   } else if (source.endsWith('}}')) {
     const tag = source.slice(0, -2)
     type = 'meta'
 
     if (tag === 'quote') {
-      html = `<i>结束引用</i>`
+      html = `<i>引用块结束</i>`
     } else {
       html = `<i>元数据 ${tag} 结束</i>`
     }
