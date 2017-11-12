@@ -5,7 +5,7 @@
       <v-toolbar-title>{{ chapter.title }}</v-toolbar-title>
     </v-toolbar>
     <main>
-      <v-content>
+      <v-content id="paragraphs-list">
         <v-list three-line>
           <template v-for="(paragraph, index) in paragraphs">
             <v-divider v-if="index !== 0" :key="paragraph._id + 'divider'" inset></v-divider>
@@ -34,6 +34,9 @@
             </v-list-tile>
           </template>
         </v-list>
+        <div class="loading">
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </div>
       </v-content>
     </main>
   </v-app>
@@ -45,6 +48,7 @@
       id: null,       // 切换路由时 paramId 会变为 undefined, 所以要缓存一下 id
       page: 0,
       count: -1,
+      loading: false,
       paragraphs: []
     }),
     computed: {
@@ -60,7 +64,9 @@
     },
     methods: {
       async fetch () {
-        if (this.count === -1 || this.page < this.pages) {
+        if (!this.loading && (this.count === -1 || this.page < this.pages)) {
+          this.loading = true
+
           const url = `chapter/${this.id}/paragraphs/${++this.page}`
           const { items, count } = (await this.$http.get(url)).data
 
@@ -71,10 +77,11 @@
 
           this.count = count
           this.paragraphs = this.paragraphs.concat(items)
+          this.loading = false
         }
       },
       async checkChapterId () {
-        await this.fetching
+        await this.loading
 
         if (!this.chapters[this.paramId]) {
           this.$router.replace('/chapters')
@@ -88,6 +95,15 @@
         this.page = 0
         return true
       }
+    },
+    mounted () {
+      const el = this.$el.querySelector('#paragraphs-list')
+      el.addEventListener('scroll', () => {
+        console.log(el.scrollTop, el.getBoundingClientRect().height, el.scrollHeight - 100)
+        if (el.scrollTop + el.getBoundingClientRect().height > el.scrollHeight - 100) {
+          this.fetch()
+        }
+      })
     },
     beforeRouteEnter (to, from, next) {
       next(async vm => {
@@ -129,6 +145,12 @@
       height: auto;
       max-height: 48px;
       white-space: normal;
+    }
+
+    .loading {
+      padding: 24px 0;
+      display: flex;
+      justify-content: center;
     }
   }
 </style>
