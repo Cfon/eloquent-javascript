@@ -41,9 +41,9 @@ export default {
         const url = `chapter/${chapterId}/paragraphs/${nextPage}`
         const { items: paragraphs } = (await axios.get(url)).data
 
-        const generateDescription = (await import(/* webpackChunkName: "markdown" */ '../lib/paragraph')).default
+        const renderHTML = (await import(/* webpackChunkName: "markdown" */ '../lib/paragraph')).default
         for (const paragraph of paragraphs) {
-          Object.assign(paragraph, await generateDescription(paragraph))
+          Object.assign(paragraph, await renderHTML(paragraph.source))
         }
 
         commit('PUSH_PARAGRAPHS', { chapterId, paragraphs })
