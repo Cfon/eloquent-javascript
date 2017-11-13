@@ -7,7 +7,19 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch",
+      "name": "Import",
+      "program": "${workspaceRoot}/dist/import.js",
+      "protocol": "inspector",
+      "preLaunchTask": "build",
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "*,-streamroller*"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Server",
       "program": "${workspaceRoot}/dist/main.js",
       "protocol": "inspector",
       "preLaunchTask": "build",
