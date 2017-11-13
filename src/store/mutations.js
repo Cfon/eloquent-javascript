@@ -15,5 +15,14 @@ export default {
   },
   SET_COMMITS_BEHIND (store, value) {
     store.commitsBehind = value
+  },
+  START_CHAPTER_FETCH (store, chapterId) {
+    store.chapters[chapterId].fetching = true
+  },
+  FINISH_CHAPTER_FETCH (store, chapterId) {
+    store.chapters[chapterId].fetching = false
+  },
+  PUSH_PARAGRAPHS (store, { chapterId, paragraphs }) {
+    store.chapters[chapterId].paragraphs = store.chapters[chapterId].paragraphs.concat(paragraphs)
   }
 }

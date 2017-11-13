@@ -45,11 +45,7 @@
 <script>
   export default {
     data: () => ({
-      id: null,       // 切换路由时 paramId 会变为 undefined, 所以要缓存一下 id
-      page: 0,
-      count: -1,
-      loading: true,
-      paragraphs: []
+      id: null        // 切换路由时 paramId 会变为 undefined, 所以要缓存一下 id
     }),
     computed: {
       paramId () {
@@ -58,26 +54,23 @@
       chapter () {
         return this.chapters[this.id] || {}
       },
-      pages () {
-        return Math.ceil(this.count / 10)
+      loading () {
+        return !(this.chapter && !this.chapter.fetching)
+      },
+      paragraphs () {
+        return this.chapter ? this.chapter.paragraphs : []
       }
     },
     methods: {
       async fetch () {
-        if (!this.loading && (this.count === -1 || this.page < this.pages)) {
-          this.loading = true
+        const el = this.$el.querySelector('#paragraphs-list')
+        const contentEl = el.querySelector('ul')
 
-          const url = `chapter/${this.id}/paragraphs/${++this.page}`
-          const { items, count } = (await this.$http.get(url)).data
-
-          const generateDescription = (await import(/* webpackChunkName: "markdown" */ '../lib/paragraph')).default
-          for (const item of items) {
-            Object.assign(item, await generateDescription(item))
-          }
-
-          this.count = count
-          this.paragraphs = this.paragraphs.concat(items)
-          this.loading = false
+        if (
+          contentEl.getBoundingClientRect().height <= window.innerHeight ||
+          el.scrollTop + el.getBoundingClientRect().height > el.scrollHeight - 100
+        ) {
+          return this.fetchChapter(this.id)
         }
       },
       async checkChapterId () {
@@ -88,23 +81,13 @@
           return false
         }
 
-        // checkChapterId 只在路由进入时调用,
-        // 所以在这里加入一些初始化代码
         this.id = this.paramId
-        this.loading = false
-        this.paragraphs = []
-        this.page = 0
-
         return true
       }
     },
     mounted () {
       const el = this.$el.querySelector('#paragraphs-list')
-      el.addEventListener('scroll', () => {
-        if (el.scrollTop + el.getBoundingClientRect().height > el.scrollHeight - 100) {
-          this.fetch()
-        }
-      })
+      el.addEventListener('scroll', this.fetch)
     },
     beforeRouteEnter (to, from, next) {
       next(async vm => {
