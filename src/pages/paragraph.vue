@@ -4,25 +4,31 @@
       <v-btn @click="$router.back()" icon><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>{{ chapter.title }}</v-toolbar-title>
     </v-toolbar>
-    <main>
+    <main v-if="!loading">
       <v-content>
         <v-container>
-          <div v-if="paragraph.source.original">
-            <div class="card-title">原文</div>
-            <v-card>
-              <v-card-title v-html="paragraph.source.html"></v-card-title>
-            </v-card>
-          </div>
-          <div v-if="paragraph.translation.original">
-            <div class="card-title">译文</div>
-            <v-card>
-              <v-card-title v-html="paragraph.translation.html"></v-card-title>
-            </v-card>
-          </div>
+          <div class="section-title">标签</div>
+          <div v-if="!paragraph.tags.length" class="grey--text"><i>无标签</i></div>
+          <v-chip class="white--text" small disabled
+            v-for="tag in paragraph.tags"
+            :key="tag._id"
+            :style="{ backgroundColor: tags[tag].color }"
+          >{{ tags[tag].title }}</v-chip>
+        </v-container>
+        <v-divider></v-divider>
+        <v-container>
+          <div class="section-title">原文</div>
+          <div v-html="paragraph.source.html"></div>
+        </v-container>
+        <v-divider></v-divider>
+        <v-container>
+          <div class="section-title">译文</div>
+          <div v-if="paragraph.translation.original" v-html="paragraph.translation.html"></div>
+          <div v-else class="grey--text"><i>此段落尚未翻译</i></div>
         </v-container>
       </v-content>
     </main>
-    <v-bottom-nav id="history-nav" :value="true" class="white">
+    <v-bottom-nav v-if="!loading" id="history-nav" :value="true" class="white">
       <v-btn :disabled="previewIndex <= 0" @click="previewIndex--">
         <v-icon>keyboard_arrow_left</v-icon>
       </v-btn>
@@ -35,6 +41,9 @@
         <v-icon>keyboard_arrow_right</v-icon>
       </v-btn>
     </v-bottom-nav>
+    <v-layout v-else align-center justify-center>
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-layout>
   </v-app>
 </template>
 
@@ -44,11 +53,11 @@
   export default {
     data: () => ({
       data: {
+        tags: [],
         history: []
       },
       previewIndex: 0,
       loading: false,
-      notFound: false,
       chapterId: null,
       paragraphId: null
     }),
@@ -57,7 +66,7 @@
         return this.chapters[this.chapterId] || {}
       },
       paragraph () {
-        return this.data.history[this.previewIndex] || { source: {}, translation: {} }
+        return this.data.history[this.previewIndex] || { tags: [], source: {}, translation: {} }
       }
     },
     methods: {
@@ -69,12 +78,12 @@
         await this.fetching
         const renderHTML = (await import(/* webpackChunkName: "markdown" */ '../lib/paragraph')).default
         const { data } = await this.$http.get(`/chapter/${this.chapterId}/paragraph/${this.paragraphId}`)
-
         if (data) {
           const lastHistoryItem = data.history[data.history.length - 1]
           if (lastHistoryItem.source !== data.source || lastHistoryItem.translation !== data.translation) {
             data.history.push({
               unsaved: true,
+              tags: data.tags.slice(),
               source: data.source,
               translation: data.translation
             })
@@ -82,13 +91,13 @@
 
           for (const item of data.history) {
             item.source = {
-              original: data.source,
-              ...(await renderHTML(data.source))
+              original: item.source,
+              ...(await renderHTML(item.source))
             }
 
             item.translation = {
-              original: data.translation,
-              ...(await renderHTML(data.translation))
+              original: item.translation,
+              ...(await renderHTML(item.translation))
             }
           }
 
@@ -133,9 +142,10 @@
       }
     }
 
-    .card-title {
+    .section-title {
       margin-bottom: 8px;
       font-size: 14px;
+      color: #616161;
     }
 
     #history-nav {
@@ -146,6 +156,10 @@
         flex: none;
         opacity: 0.8 !important;
         background-color: transparent !important;
+
+        .btn__content {
+          transition: none;
+        }
 
         .btn__content::before {
           background-color: transparent !important;
