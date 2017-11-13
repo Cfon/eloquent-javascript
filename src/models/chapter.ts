@@ -82,6 +82,7 @@ schema.methods = {
       }
     }
 
+    this.title = title
     return title
   },
   async updateParagraphs (paragraphs, message) {
