@@ -51,6 +51,13 @@
 
       titleEvent.$on('routeLeave', () => { this.showTitle = false })
       titleEvent.$on('titleChanged', title => { this.title = title })
+    },
+    beforeRouteEnter (to, from, next) {
+      if (to.path === '/') {
+        next('/overview')
+      } else {
+        next()
+      }
     }
   }
 </script>
