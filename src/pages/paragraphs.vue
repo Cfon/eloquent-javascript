@@ -34,7 +34,7 @@
             </v-list-tile>
           </template>
         </v-list>
-        <div class="loading">
+        <div v-if="loading" class="loading">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </div>
       </v-content>
