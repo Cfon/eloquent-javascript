@@ -31,6 +31,25 @@ export default function parse (input: string) {
         paragraph = paragraphs[i] += DOUBLE_LINE_BREAK + remainingContent
       }
     }
+
+    // split meta fields
+    if (/^{{/.test(paragraph)) {
+      const lineBreak = paragraph.indexOf('\n')
+      const meta = paragraph.slice(0, lineBreak)
+      const nextParagraph = paragraph.slice(lineBreak + 1)
+
+      if (lineBreak >= 0 && nextParagraph) {
+        paragraphs.splice(i, 1, meta, nextParagraph)
+      }
+    } else if (/}}$/.test(paragraph)) {
+      const lineBreak = paragraph.lastIndexOf('\n')
+      const previousParagraph = paragraph.slice(0, lineBreak)
+      const meta = paragraph.slice(lineBreak + 1)
+
+      if (lineBreak >= 0 && previousParagraph) {
+        paragraphs.splice(i, 1, previousParagraph, meta)
+      }
+    }
   }
 
   // convert paragraphs to string
