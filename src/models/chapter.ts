@@ -112,6 +112,7 @@ schema.methods = {
           paragraph.history.push({
             source: oldParagraph.source,
             translation: oldParagraph.translation,
+            tags: oldParagraph.tags,
             message,
             date: new Date()
           })

@@ -6,6 +6,7 @@ import { sha1, parseJSON, randomString } from '../lib/util'
 export interface ParagraphHistory {
   source: string,
   translation: string,
+  tags: string[],
   message: string,
   date: Date
 }
@@ -21,7 +22,7 @@ export default class Paragraph {
   translation: string
 
   history: ParagraphHistory[] = []
-  tags: string[]
+  tags: string[] = []
 
   created: Date
   updated: Date
@@ -103,6 +104,7 @@ export default class Paragraph {
       this.history.push({
         source: this.source,
         translation: this.translation,
+        tags: this.tags.slice(),
         message,
         date: new Date()
       })
@@ -135,6 +137,7 @@ export const paragraphSchema = new Schema({
       _id: false,
       source: String,
       translation: String,
+      tags: [String],
       message: String,
       date: Date
     }],
