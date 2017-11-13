@@ -9,7 +9,7 @@
         <v-list three-line>
           <template v-for="(paragraph, index) in paragraphs">
             <v-divider v-if="index !== 0" :key="paragraph._id + 'divider'" inset></v-divider>
-            <v-list-tile :key="paragraph._id" avatar>
+            <v-list-tile :key="paragraph._id" :to="`/chapter/${id}/paragraph/${paragraph._id}`" avatar>
               <v-badge color="accent" :value="paragraph.unsaved" overlap>
                 <span slot="badge"></span>
                 <v-list-tile-avatar size="36px" class="paragraph-index primary">{{ paragraph.index + 1 }}</v-list-tile-avatar>

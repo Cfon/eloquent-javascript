@@ -18,6 +18,7 @@ export default new VueRouter({
         { path: '/tags', component: require('../pages/tags').default }
       ]
     },
-    { path: '/chapter/:id', component: require('../pages/paragraphs').default }
+    { path: '/chapter/:id', component: require('../pages/paragraphs').default },
+    { path: '/chapter/:chapterId/paragraph/:paragraphId', component: require('../pages/paragraph').default }
   ]
 })
