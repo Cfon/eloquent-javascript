@@ -38,7 +38,7 @@ export default function parse (input: string) {
       const meta = paragraph.slice(0, lineBreak)
       const nextParagraph = paragraph.slice(lineBreak + 1)
 
-      if (lineBreak >= 0 && nextParagraph) {
+      if (lineBreak >= 0 && nextParagraph && !nextParagraph.startsWith('@')) {
         paragraphs.splice(i, 1, meta, nextParagraph)
       }
     } else if (/}}$/.test(paragraph)) {
