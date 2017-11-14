@@ -7,34 +7,54 @@
     <transition name="fade" mode="out-in">
       <v-layout v-if="!loading" class="content-wrapper" column>
         <main>
-          <v-content>
-            <v-container>
-              <div class="section-title">标签</div>
-              <div v-if="!paragraph.tags.length" class="grey--text"><i>无标签</i></div>
-              <v-chip class="white--text" small disabled
-                v-for="tag in paragraph.tags"
-                :key="tag._id"
-                :style="{ backgroundColor: tags[tag].color }"
-              >{{ tags[tag].title }}</v-chip>
-            </v-container>
-            <v-divider></v-divider>
-            <v-container>
-              <div class="section-title">原文</div>
-              <div v-html="paragraph.source.html"></div>
-            </v-container>
-            <v-divider></v-divider>
-            <v-container>
-              <div class="section-title">译文</div>
-              <div v-if="paragraph.translation.original" v-html="paragraph.translation.html"></div>
-              <div v-else class="grey--text"><i>此段落尚未翻译</i></div>
-            </v-container>
-          </v-content>
-          <v-fab-transition>
-            <v-btn v-if="editing" key="check" color="green" dark right bottom fab><v-icon>check</v-icon></v-btn>
-            <v-btn v-else key="edit" color="accent" dark right bottom fab><v-icon>edit</v-icon></v-btn>
-          </v-fab-transition>
+          <transition name="fade" mode="out-in">
+            <v-content v-if="editing" key="editor">
+              <v-container>
+                <div class="section-title">标签</div>
+                <v-chip class="white--text" small disabled
+                  v-for="tag in data.tags"
+                  :key="tag._id"
+                  :style="{ backgroundColor: tags[tag].color }"
+                  close
+                >{{ tags[tag].title }}</v-chip>
+                <v-btn class="add-tag" icon small><v-icon>add</v-icon></v-btn>
+              </v-container>
+              <v-divider></v-divider>
+              <v-container>
+                <div class="section-title">原文</div>
+                <pre class="original-content">{{ data.source }}</pre>
+              </v-container>
+              <v-divider></v-divider>
+              <v-container>
+                <div class="section-title">译文</div>
+                <v-text-field class="translation-editor" v-model="data.translation" placeholder="译文" full-width auto-grow single-line	multi-line></v-text-field>
+              </v-container>
+            </v-content>
+            <v-content v-else key="preview">
+              <v-container>
+                <div class="section-title">标签</div>
+                <div v-if="!paragraph.tags.length" class="grey--text"><i>无标签</i></div>
+                <v-chip class="white--text" small disabled
+                  v-for="tag in paragraph.tags"
+                  :key="tag._id"
+                  :style="{ backgroundColor: tags[tag].color }"
+                >{{ tags[tag].title }}</v-chip>
+              </v-container>
+              <v-divider></v-divider>
+              <v-container>
+                <div class="section-title">原文</div>
+                <div v-html="paragraph.source.html"></div>
+              </v-container>
+              <v-divider></v-divider>
+              <v-container>
+                <div class="section-title">译文</div>
+                <div v-if="paragraph.translation.original" v-html="paragraph.translation.html"></div>
+                <div v-else class="grey--text"><i>此段落尚未翻译</i></div>
+              </v-container>
+            </v-content>
+          </transition>
         </main>
-        <v-bottom-nav id="history-nav" :value="true" class="white">
+        <v-bottom-nav id="history-nav" :value="!editing" class="white">
           <v-btn :disabled="previewIndex <= 0" @click="previewIndex--">
             <v-icon>keyboard_arrow_left</v-icon>
           </v-btn>
@@ -47,6 +67,10 @@
             <v-icon>keyboard_arrow_right</v-icon>
           </v-btn>
         </v-bottom-nav>
+        <v-fab-transition mode="out-in">
+          <v-btn v-if="editing" key="check" color="green" :class="{ editing }" @click="submit" dark right bottom fab><v-icon>check</v-icon></v-btn>
+          <v-btn v-else key="edit" color="accent" :class="{ editing }" @click="editing = true" dark right bottom fab><v-icon>edit</v-icon></v-btn>
+        </v-fab-transition>
       </v-layout>
       <v-layout v-else align-center justify-center>
         <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -121,6 +145,9 @@
       updateIds (params = this.$route.params) {
         this.chapterId = params.chapterId
         this.paragraphId = params.paragraphId
+      },
+      async submit () {
+        this.editing = false
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -180,6 +207,28 @@
 
     .btn.btn--floating {
       position: absolute;
+      transition-duration: 0.3s;
+
+      &:not(.editing) {
+        margin-bottom: 68px;
+      }
+    }
+
+    .add-tag {
+      display: inline-block;
+    }
+
+    .original-content {
+      overflow: auto;
+    }
+
+    .translation-editor {
+      padding: 0;
+
+      textarea {
+        font-family: Inconsolata, monospace;
+        font-size: 14px;
+      }
     }
 
     #history-nav {
