@@ -45,8 +45,11 @@ export async function status () {
     .map(s => ({ file: s[1], flag: s[0] }))
 }
 
-export async function commitAll (message: string) {
-  await git('add', '--all')
+export function add (...files: string[]) {
+  return git('add', ...files)
+}
+
+export function commit (message: string) {
   return git('commit', '-m', message)
 }
 

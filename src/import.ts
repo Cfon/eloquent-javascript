@@ -19,7 +19,8 @@ const config = require('../config')
     await importFile(file, '首次导入文件')
   }
 
-  await git.commitAll('首次导入文件')
+  await git.add('--all')
+  await git.commit('首次导入文件')
 })().catch(err => {
   console.error(err)
   return 1
