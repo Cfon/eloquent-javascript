@@ -238,6 +238,9 @@
       next()
       this.updateIds(to.params)
     },
+    beforeRouteLeave (to, from, next) {
+      next(!this.submitting)
+    },
     watch: {
       chapterId () { this.fetch() },
       paragraphId () { this.fetch() }
