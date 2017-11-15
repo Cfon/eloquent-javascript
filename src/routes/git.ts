@@ -59,8 +59,7 @@ router.patch('local',
     }))
   }),
   async (ctx, next) => {
-    await git.fetch()
-    await git.mergeRemote(ctx.request.body.message)
+    await git.merge(ctx.request.body.message)
     await meta.set('origin', await git.remoteChanges())
     ctx.result = null
   }

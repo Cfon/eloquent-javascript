@@ -1,15 +1,10 @@
 'use strict'
 
-import merge from './merge'
-import parse from './parser'
 import logger from '../lib/logger'
-import Chapter from '../models/chapter'
-import Paragraph from './paragraph'
 import * as path from 'path'
-import importFile from './import'
 import * as shelljs from 'shelljs'
-import { readFile } from 'mz/fs'
 import { GitError } from '../lib/errors'
+import { mergeRemote } from './merge'
 
 const config = require('../../config')
 
@@ -74,44 +69,17 @@ export async function remoteChanges () {
   return result
 }
 
-export async function mergeRemote (message: string) {
+export async function merge (message: string) {
   // make sure that it is not in middle of a merge
   await git('--no-pager', 'show', 'MERGE_HEAD')
     .then(() => { throw new GitError('There is another merge or rebase in progress') }, () => null)
 
   try {
-    // ignore merge errors
+    // merge without commit to get the changes. also ignore merge errors
     await git('merge', config.remote, '--no-ff', '--no-commit').catch(() => null)
 
-    // merge all chapters
-    for (const { file, flag } of await status()) {
-      if (!/^[012].*\.md$/.test(file)) continue
-
-      const fullPath = path.join(config.workDir, file)
-      const chapterId = parseInt(file, 10)
-
-      let paragraphs: Paragraph[] = []
-      if (flag === 'UU') {
-        paragraphs = await merge(fullPath)
-      } else if (flag === 'M' || flag === 'A') {
-        const input = await readFile(fullPath, 'utf8')
-        paragraphs = parse(input)
-      }
-
-      const chapter = await Chapter.findById(chapterId)
-      if (chapter) {
-        await chapter.updateParagraphs(paragraphs, message)
-        await chapter.export()
-      } else {
-        // create new database record if the record is not exist
-        await importFile(fullPath, message)
-      }
-
-      await git('add', file)
-    }
-
-    // finally commit the merge
-    await git('commit', '-m', message)
+    // do merge
+    await mergeRemote(message)
   } catch (err) {
     // if there are error occurred, about the merge
     await git('merge', '--abort')
