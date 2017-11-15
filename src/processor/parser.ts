@@ -4,7 +4,7 @@ import Paragraph from './paragraph'
 
 const DOUBLE_LINE_BREAK = '\n\n'
 
-export default function parse (input: string) {
+export function splitParagraphs (input: string) {
   // split paragraphs by empty lines
   const paragraphs = input
     .split(/\n{2,}/)
@@ -13,7 +13,7 @@ export default function parse (input: string) {
 
   for (let [i, paragraph] of paragraphs.entries()) {
     // merge code blocks (because there may have empty lines in code blocks)
-    if (/^```/.test(paragraph) && !/^```$/m.test(paragraph)) {
+    if (/^```/.test(paragraph) && !/^```$/m.test(paragraph.slice(3))) {
       let j: number
       for (j = i + 1; j < paragraphs.length; j++) {
         if (/^```$/m.test(paragraphs[j])) {
@@ -51,6 +51,12 @@ export default function parse (input: string) {
       }
     }
   }
+
+  return paragraphs
+}
+
+export default function parse (input: string) {
+  const paragraphs = splitParagraphs(input)
 
   // convert paragraphs to string
   return paragraphs.map(p => new Paragraph(p))
