@@ -87,8 +87,10 @@ schema.methods = {
   },
   async updateParagraphs (paragraphs, message) {
     for (const paragraph of paragraphs) {
-      const oldParagraph = this.paragraphs.find(p => p._id === paragraph._id)
+      let oldParagraph = this.paragraphs.find(p => p._id === paragraph._id)
       if (oldParagraph) {
+        oldParagraph = (oldParagraph as any).toObject() as Paragraph
+
         // update paragraph from oldParagraph except source and translation
         Object.assign(paragraph, oldParagraph, {
           source: paragraph.source,
@@ -108,15 +110,10 @@ schema.methods = {
           }
 
           // write history
-          paragraph.updated = new Date()
-          paragraph.history.push({
-            source: oldParagraph.source,
-            translation: oldParagraph.translation,
-            tags: oldParagraph.tags,
-            message,
-            date: new Date()
-          })
+          paragraph.pushHistory(message)
         }
+      } else {
+        paragraph.pushHistory(message)
       }
     }
 
