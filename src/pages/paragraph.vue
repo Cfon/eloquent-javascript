@@ -2,7 +2,7 @@
   <v-app id="paragraph" light>
     <v-toolbar color="primary" app>
       <transition name="fade" mode="out-in">
-        <v-btn v-if="editing" key="close" @click="editing = null" icon><v-icon>close</v-icon></v-btn>
+        <v-btn v-if="editing" key="close" @click="editing = null" :disabled="submitting" icon><v-icon>close</v-icon></v-btn>
         <v-btn v-else key="back" @click="$router.back()" icon><v-icon>arrow_back</v-icon></v-btn>
       </transition>
       <transition name="fade" mode="out-in">
@@ -98,6 +98,11 @@
         <v-icon>keyboard_arrow_right</v-icon>
       </v-btn>
     </v-bottom-nav>
+    <v-snackbar absolute v-model="success" :timeout="3000">
+      <span>提交成功</span>
+      <v-spacer></v-spacer>
+      <a class="pink--text" @click.native="success = false">关闭</a>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -115,7 +120,9 @@
       chapterId: null,
       paragraphId: null,
       rows: 2,
-      editing: null
+      editing: null,
+      submitting: false,
+      success: false
     }),
     computed: {
       chapter () {
@@ -123,6 +130,9 @@
       },
       paragraph () {
         return this.data.history[this.previewIndex] || { tags: [], source: {}, translation: {} }
+      },
+      apiUrl () {
+        return `/chapter/${this.chapterId}/paragraph/${this.paragraphId}`
       },
       tagsAddable () {
         if (!this.editing) return []
@@ -132,12 +142,14 @@
     methods: {
       datetimeToString,
       async fetch () {
-        if (this.loading) return
-        this.loading = true
+        if (!this.submitting) {
+          if (this.loading) return
+          this.loading = true
+        }
 
         await this.fetching
         const renderHTML = (await import(/* webpackChunkName: "markdown" */ '../lib/paragraph')).default
-        const { data } = await this.$http.get(`/chapter/${this.chapterId}/paragraph/${this.paragraphId}`)
+        const { data } = await this.$http.get(this.apiUrl)
         if (data) {
           const lastHistoryItem = data.history[data.history.length - 1]
           if (lastHistoryItem.source !== data.source || lastHistoryItem.translation !== data.translation) {
@@ -167,7 +179,9 @@
           this.notFound = true
         }
 
-        this.loading = false
+        if (!this.submitting) {
+          this.loading = false
+        }
       },
       updateIds (params = this.$route.params) {
         this.chapterId = params.chapterId
@@ -197,6 +211,20 @@
         }
       },
       async submit () {
+        if (this.submitting) return
+        this.submitting = true
+
+        const result = (await this.$http.patch(this.apiUrl, this.editing)).data
+        if (result == null) {
+          await this.fetchData()
+          await this.fetch()
+          this.success = true
+        } else {
+          // TODO: 错误处理
+          alert('提交失败')
+        }
+
+        this.submitting = false
         this.editing = null
       }
     },
@@ -222,8 +250,7 @@
     main {
       flex: 1;
       margin-bottom: 56px;
-      transition: margin-bottom 0.3s ease;
-      transition-delay: 0.3s;
+      transition: 0.3s ease;
 
       &.editing {
         margin-bottom: 0;
@@ -319,6 +346,14 @@
 
       .message {
         flex: 1;
+      }
+    }
+
+    .snack {
+      bottom: 56px;
+
+      .snack__content {
+        height: 56px;
       }
     }
   }
