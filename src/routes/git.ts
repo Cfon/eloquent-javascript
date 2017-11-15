@@ -18,12 +18,15 @@ router.get('origin',
 // Commit and push
 router.patch('origin',
   validate({
-    chapters: raw({
+    chapters: required(raw({
       type: 'array',
       items: { type: 'integer' },
       minItems: 1
-    }),
-    message: required('string')
+    })),
+    message: required(raw({
+      type: 'string',
+      minLength: 1
+    }))
   }),
   async (ctx, next) => {
     const { chapters: chaptersToCommit, message } = ctx.request.body
@@ -50,7 +53,10 @@ router.patch('origin',
 // Pull
 router.patch('local',
   validate({
-    message: required('string')
+    message: required(raw({
+      type: 'string',
+      minLength: 1
+    }))
   }),
   async (ctx, next) => {
     await git.fetch()
