@@ -122,6 +122,7 @@ schema.methods = {
 
     this.updated = new Date()
     this.paragraphs = paragraphs
+    this.updateTitle()
     return this.save()
   }
 } as ChapterMethods
