@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && NODE_ENV=production node dist/main",
-    "import": "tsc && node dist/import"
+    "import": "tsc && node dist/import",
+    "merge": "tsc && node dist/merge"
   },
   "author": "Jingkun Hua <huajingkun1214@gmail.com>",
   "license": "MIT",
