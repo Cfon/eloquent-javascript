@@ -27,7 +27,13 @@
               <v-divider></v-divider>
               <v-container>
                 <div class="section-title">译文</div>
-                <v-text-field class="translation-editor" v-model="data.translation" placeholder="译文" full-width auto-grow single-line	multi-line></v-text-field>
+                <textarea
+                  class="translation-editor"
+                  placeholder="译文" wrap="off"
+                  :rows="rows"
+                  :value="data.translation"
+                  @input="updateTranslation"
+                ></textarea>
               </v-container>
             </v-content>
             <v-content v-else key="preview">
@@ -92,7 +98,8 @@
       loading: false,
       editing: false,
       chapterId: null,
-      paragraphId: null
+      paragraphId: null,
+      rows: 2
     }),
     computed: {
       chapter () {
@@ -148,6 +155,10 @@
       },
       async submit () {
         this.editing = false
+      },
+      updateTranslation (e) {
+        this.data.translation = e.target.value
+        this.rows = e.target.value.split('\n').length + 1
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -223,12 +234,12 @@
     }
 
     .translation-editor {
-      padding: 0;
-
-      textarea {
-        font-family: Inconsolata, monospace;
-        font-size: 14px;
-      }
+      width: 100%;
+      display: block;
+      font-family: Inconsolata, monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
     }
 
     #history-nav {
