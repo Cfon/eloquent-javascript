@@ -2,7 +2,7 @@
   <v-app id="paragraph" light>
     <v-toolbar color="primary" app>
       <transition name="fade" mode="out-in">
-        <v-btn v-if="editing" key="close" @click="cancel" icon><v-icon>close</v-icon></v-btn>
+        <v-btn v-if="editing" key="close" @click="editing = null" icon><v-icon>close</v-icon></v-btn>
         <v-btn v-else key="back" @click="$router.back()" icon><v-icon>arrow_back</v-icon></v-btn>
       </transition>
       <transition name="fade" mode="out-in">
@@ -18,11 +18,20 @@
               <div class="section-title">标签</div>
               <v-chip class="white--text" small disabled
                 v-for="tag in editing.tags"
-                :key="tag._id"
+                :key="tag"
                 :style="{ backgroundColor: tags[tag].color }"
+                @input="removeTag(tag)"
                 close
               >{{ tags[tag].title }}</v-chip>
-              <v-btn class="add-tag" icon small><v-icon>add</v-icon></v-btn>
+              <v-menu>
+                <v-btn class="add-tag" slot="activator" icon small><v-icon>add</v-icon></v-btn>
+                <v-list id="add-tag-menu">
+                  <v-list-tile v-for="tag in tagsAddable" :key="tag" @click="editing.tags.push(tag)">
+                    <div class="tag-color" :style="{ backgroundColor: tags[tag].color }"></div>
+                    <v-list-tile-title class="body-1">{{ tags[tag].title }}</v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
             </v-container>
             <v-divider></v-divider>
             <v-container>
@@ -114,6 +123,10 @@
       },
       paragraph () {
         return this.data.history[this.previewIndex] || { tags: [], source: {}, translation: {} }
+      },
+      tagsAddable () {
+        if (!this.editing) return []
+        return Object.keys(this.tags).filter(tag => this.editing.tags.indexOf(tag) === -1)
       }
     },
     methods: {
@@ -177,8 +190,11 @@
         this.editing.translation = e.target.value
         this.rows = e.target.value.split('\n').length + 1
       },
-      cancel () {
-        this.editing = null
+      removeTag (tag) {
+        const index = this.editing.tags.indexOf(tag)
+        if (index !== -1) {
+          this.editing.tags.splice(index, 1)
+        }
       },
       async submit () {
         this.editing = null
@@ -304,6 +320,17 @@
       .message {
         flex: 1;
       }
+    }
+  }
+
+  #add-tag-menu {
+    .tag-color {
+      width: 12px;
+      height: 12px;
+      margin-left: 4px;
+      margin-right: 16px;
+      flex: none;
+      border-radius: 50px;
     }
   }
 </style>
