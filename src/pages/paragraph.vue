@@ -1,17 +1,23 @@
 <template>
   <v-app id="paragraph" light>
     <v-toolbar color="primary" app>
-      <v-btn @click="$router.back()" icon><v-icon>arrow_back</v-icon></v-btn>
-      <v-toolbar-title>{{ chapter.title }}</v-toolbar-title>
+      <transition name="fade" mode="out-in">
+        <v-btn v-if="editing" key="close" @click="cancel" icon><v-icon>close</v-icon></v-btn>
+        <v-btn v-else key="back" @click="$router.back()" icon><v-icon>arrow_back</v-icon></v-btn>
+      </transition>
+      <transition name="fade" mode="out-in">
+        <v-toolbar-title v-if="editing" key="editing">编辑段落</v-toolbar-title>
+        <v-toolbar-title v-else key="previewing">{{ chapter.title }}</v-toolbar-title>
+      </transition>
     </v-toolbar>
     <transition name="fade" mode="out-in">
       <main v-if="!loading" :class="{ editing }">
-        <transition name="fade" mode="out-in">
+        <transition name="fade" mode="out-in" @after-enter="editing && focusEditor()">
           <v-content v-if="editing" key="editor" class="editor">
             <v-container>
               <div class="section-title">标签</div>
               <v-chip class="white--text" small disabled
-                v-for="tag in data.tags"
+                v-for="tag in editing.tags"
                 :key="tag._id"
                 :style="{ backgroundColor: tags[tag].color }"
                 close
@@ -24,13 +30,16 @@
               <pre class="original-content">{{ data.source }}</pre>
             </v-container>
             <v-divider></v-divider>
-            <v-container>
-              <div class="section-title">译文</div>
+            <v-container class="translation-editor-wrapper" @click="focusEditor">
+              <div class="section-title">
+                <span>译文</span>
+                <a v-if="!editing.translation" class="copy accent--text" @click="copy">复制原文</a>
+              </div>
               <textarea
                 class="translation-editor"
-                placeholder="译文" wrap="off"
+                placeholder="在此编辑译文" wrap="off"
                 :rows="rows"
-                :value="data.translation"
+                :value="editing.translation"
                 @input="updateTranslation"
               ></textarea>
             </v-container>
@@ -60,7 +69,7 @@
         </transition>
         <v-fab-transition mode="out-in">
           <v-btn v-if="editing" key="check" color="green" @click="submit" dark right bottom fab><v-icon>check</v-icon></v-btn>
-          <v-btn v-else key="edit" color="accent" @click="editing = true" dark right bottom fab><v-icon>edit</v-icon></v-btn>
+          <v-btn v-else key="edit" color="accent" @click="edit" dark right bottom fab><v-icon>edit</v-icon></v-btn>
         </v-fab-transition>
       </main>
       <v-layout v-else align-center justify-center>
@@ -94,10 +103,10 @@
       },
       previewIndex: 0,
       loading: false,
-      editing: false,
       chapterId: null,
       paragraphId: null,
-      rows: 2
+      rows: 2,
+      editing: null
     }),
     computed: {
       chapter () {
@@ -151,12 +160,28 @@
         this.chapterId = params.chapterId
         this.paragraphId = params.paragraphId
       },
-      async submit () {
-        this.editing = false
+      edit () {
+        this.editing = {
+          tags: this.data.tags.slice(),
+          translation: this.data.translation
+        }
+      },
+      copy () {
+        this.editing.translation = this.data.source
+        this.focusEditor()
+      },
+      focusEditor () {
+        this.$el.querySelector('textarea').focus()
       },
       updateTranslation (e) {
-        this.data.translation = e.target.value
+        this.editing.translation = e.target.value
         this.rows = e.target.value.split('\n').length + 1
+      },
+      cancel () {
+        this.editing = null
+      },
+      async submit () {
+        this.editing = null
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -178,28 +203,29 @@
 
 <style lang="scss">
   #paragraph {
-    code {
-      font-size: 14px;
-      font-weight: normal;
-
-      &.inline {
-        display: inline;
-      }
-    }
-
-    .section-title {
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: #616161;
-    }
-
     main {
       flex: 1;
       margin-bottom: 56px;
       transition: margin-bottom 0.3s ease;
+      transition-delay: 0.3s;
 
       &.editing {
         margin-bottom: 0;
+      }
+
+      code {
+        font-size: 14px;
+        font-weight: normal;
+
+        &.inline {
+          display: inline;
+        }
+      }
+
+      .section-title {
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #616161;
       }
 
       .content {
@@ -218,12 +244,27 @@
     }
 
     .editor {
+      display: flex;
+      flex-direction: column;
+
+      .section-title {
+        display: flex;
+      }
+
       .add-tag {
         display: inline-block;
       }
 
       .original-content {
         overflow: auto;
+      }
+
+      .copy {
+        margin-left: auto;
+      }
+
+      :not(.translation-editor-wrapper) {
+        flex: none;
       }
 
       .translation-editor {
@@ -238,6 +279,10 @@
 
     #history-nav {
       flex: none;
+
+      &.bottom-nav--active {
+        transition-delay: 0.3s;
+      }
 
       .btn {
         min-width: 0;
