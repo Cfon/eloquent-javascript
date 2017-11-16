@@ -108,22 +108,23 @@ export async function mergeRemote (message: string) {
     const chapter = await Chapter.findById(change.chapterId)
     if (chapter) {
       let paragraphs: Paragraph[]
-      if (change.flag === 'UU' && change.paragraphs) {
-        paragraphs = change.paragraphs
-      } else if (change.flag === 'M') {
-        const input = await readFile(change.fullPath, 'utf8')
-        paragraphs = parse(input)
-      } else if (change.flag === 'A' && removedChapters.includes(change.chapterId)) {
+      if (change.flag === 'A' && removedChapters.includes(change.chapterId)) {
         pendingActions.push(() => importFile(change.fullPath, message))
-        continue
       } else {
-        throw new GitError(`无法识别的文件更改：${JSON.stringify(change)}`)
-      }
+        if (change.flag === 'UU' && change.paragraphs) {
+          paragraphs = change.paragraphs
+        } else if (change.flag === 'M') {
+          const input = await readFile(change.fullPath, 'utf8')
+          paragraphs = parse(input)
+        } else {
+          throw new GitError(`无法识别的文件更改：${JSON.stringify(change)}`)
+        }
 
-      pendingActions.push(async () => {
-        await chapter.updateParagraphs(paragraphs, message)
-        await chapter.export()
-      })
+        pendingActions.push(async () => {
+          await chapter.updateParagraphs(paragraphs, message)
+          await chapter.export()
+        })
+      }
     } else if (change.flag === 'A') {
       pendingActions.push(() => importFile(change.fullPath, message))
     }
