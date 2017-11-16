@@ -8,19 +8,17 @@
       <v-content>
         <v-container grid-list-xl>
           <v-layout row wrap justify-center>
-            <v-index-card v-if="unsavedCount" id="local-card" title="本地仓库" icon="octicons-repo">
-              <v-card-text>在本地仓库中有 {{ unsavedCount }} 个更改尚未提交。</v-card-text>
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-btn flat color="accent" @click="$router.push('/commit')">提交更改</v-btn>
-              </v-card-actions>
-            </v-index-card>
-            <v-index-card v-if="commitsBehind.length" title="远程仓库" icon="octicons-mark-github">
-              <v-card-text>在远程仓库中有 {{ commitsBehind.length }} 个新的更改可以合并。</v-card-text>
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-btn flat color="accent">查看详情</v-btn>
-                <v-btn flat color="accent">立即合并</v-btn>
+            <v-index-card title="仓库" icon="octicons-repo">
+              <v-card-text class="git-repo-status">
+                <span class="big-number">{{ commitsBehind.length }}</span>
+                <v-icon color="black">arrow_downward</v-icon>
+                <span class="big-number">{{ unsavedCount }}</span>
+                <v-icon color="black">arrow_upward</v-icon>
+              </v-card-text>
+              <v-divider v-if="behind || ahead"></v-divider>
+              <v-card-actions v-if="behind || ahead">
+                <v-btn v-if="behind" flat color="accent" @click="$router.push('/commit')">提交更改</v-btn>
+                <v-btn v-if="ahead" flat color="accent">合并更改</v-btn>
               </v-card-actions>
             </v-index-card>
           </v-layout>
@@ -29,3 +27,44 @@
     </main>
   </div>
 </template>
+
+<script>
+  export default {
+    computed: {
+      behind () {
+        return !!this.commitsBehind.length
+      },
+      ahead () {
+        return !!this.unsavedCount
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+  #overview {
+    .big-number {
+      font-size: 34px;
+      font-weight: 300;
+      line-height: 40px;
+
+      &:first-child {
+        padding-left: 8px;
+      }
+    }
+
+    .git-repo-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .icon {
+        margin: 0 20px 0 4px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+</style>
