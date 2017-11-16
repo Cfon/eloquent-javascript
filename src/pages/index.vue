@@ -54,7 +54,7 @@
     },
     beforeRouteEnter (to, from, next) {
       if (to.path === '/') {
-        next('/overview')
+        next(vm => vm.$router.replace('/overview'))
       } else {
         next()
       }
