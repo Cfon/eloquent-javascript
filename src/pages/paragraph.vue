@@ -1,5 +1,5 @@
 <template>
-  <v-app id="paragraph" light>
+  <div id="paragraph">
     <v-toolbar color="primary" app>
       <transition name="fade" mode="out-in">
         <v-btn v-if="editing" key="close" @click="editing = null" :disabled="submitting" icon><v-icon>close</v-icon></v-btn>
@@ -103,7 +103,7 @@
       <v-spacer></v-spacer>
       <a class="pink--text" @click.native="success = false">关闭</a>
     </v-snackbar>
-  </v-app>
+  </div>
 </template>
 
 <script>

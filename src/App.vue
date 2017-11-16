@@ -1,10 +1,38 @@
 <template>
-  <transition name="fade" mode="in-out">
-    <keep-alive>
-      <router-view class="top-level-page"></router-view>
-    </keep-alive>
-  </transition>
+  <v-app light>
+    <v-navigation-drawer v-model="drawer" enable-resize-watcher light persistent app>
+      <v-card class="elevation-0" tile>
+        <v-card-media :src="navHeaderCover" height="150px">
+          <v-container fill-height fluid>
+            <v-layout column class="title-author">
+              <span class="subheading" style="font-weight: 500">Eloquent JavaScript</span>
+              <span class="body-1">Marijn Haverbeke</span>
+            </v-layout>
+          </v-container>
+        </v-card-media>
+      </v-card>
+      <v-list>
+        <v-nav-drawer-item icon="home" to="/overview" replace exact>总览</v-nav-drawer-item>
+        <v-nav-drawer-item icon="book" to="/chapters" replace>章节</v-nav-drawer-item>
+        <v-nav-drawer-item icon="label" to="/tags" replace>标签</v-nav-drawer-item>
+      </v-list>
+    </v-navigation-drawer>
+    <transition name="fade" mode="in-out">
+      <keep-alive>
+        <router-view class="page" @open-drawer="drawer = true"></router-view>
+      </keep-alive>
+    </transition>
+  </v-app>
 </template>
+
+<script>
+  export default {
+    data: () => ({
+      drawer: false,
+      navHeaderCover: require('./assets/nav-header.png')
+    })
+  }
+</script>
 
 <style lang="scss">
   @import './assets/octicons.scss';
@@ -29,14 +57,17 @@
     font-weight: bold;
   }
 
-  .top-level-page {
+  .page {
     position: absolute;
     z-index: 0;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
+    background-color: #fafafa;
 
     .toolbar {
       z-index: 1;
@@ -45,6 +76,7 @@
     & > main {
       position: relative;
       z-index: 0;
+      flex: 1;
 
       & > .content {
         position: absolute;

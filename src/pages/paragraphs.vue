@@ -1,5 +1,5 @@
 <template>
-  <v-app id="paragraphs" light>
+  <div id="paragraphs">
     <v-toolbar color="primary" app>
       <v-btn @click="$router.back()" icon><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>{{ chapter.title }}</v-toolbar-title>
@@ -39,7 +39,7 @@
         </div>
       </v-content>
     </main>
-  </v-app>
+  </div>
 </template>
 
 <script>
