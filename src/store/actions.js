@@ -54,5 +54,8 @@ export default {
 
       commit('FINISH_CHAPTER_FETCH', chapterId)
     }
+  },
+  showSnackBar ({ commit }, message) {
+    commit('SET_SNACK_MESSAGE', message)
   }
 }

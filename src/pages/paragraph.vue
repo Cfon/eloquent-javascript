@@ -98,11 +98,6 @@
         <v-icon>keyboard_arrow_right</v-icon>
       </v-btn>
     </v-bottom-nav>
-    <v-snackbar absolute v-model="success" :timeout="3000">
-      <span>提交成功</span>
-      <v-spacer></v-spacer>
-      <a class="pink--text" @click.native="success = false">关闭</a>
-    </v-snackbar>
   </div>
 </template>
 
@@ -121,8 +116,7 @@
       paragraphId: null,
       rows: 2,
       editing: null,
-      submitting: false,
-      success: false
+      submitting: false
     }),
     computed: {
       chapter () {
@@ -218,10 +212,10 @@
         if (result == null) {
           await this.fetchData()
           await this.fetch()
-          this.success = true
+          this.showSnackBar('段落已保存')
         } else {
           // TODO: 错误处理
-          alert('提交失败')
+          this.showSnackBar(`段落保存失败 (${result.code})`)
         }
 
         this.submitting = false
@@ -349,14 +343,6 @@
 
       .message {
         flex: 1;
-      }
-    }
-
-    .snack {
-      bottom: 56px;
-
-      .snack__content {
-        height: 56px;
       }
     }
   }

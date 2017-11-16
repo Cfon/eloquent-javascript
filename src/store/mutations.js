@@ -24,5 +24,8 @@ export default {
   },
   PUSH_PARAGRAPHS (store, { chapterId, paragraphs }) {
     store.chapters[chapterId].paragraphs = store.chapters[chapterId].paragraphs.concat(paragraphs)
+  },
+  SET_SNACK_MESSAGE (store, message) {
+    store.snackMessage = message
   }
 }

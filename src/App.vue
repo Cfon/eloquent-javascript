@@ -22,6 +22,11 @@
         <router-view class="page" @open-drawer="drawer = true"></router-view>
       </keep-alive>
     </transition>
+    <v-snackbar absolute :value="!!snackMessage" @input="hideSnack" :timeout="3000">
+      <span>{{ snackMessage }}</span>
+      <v-spacer></v-spacer>
+      <a class="pink--text" @click.native="hideSnack">关闭</a>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -30,7 +35,12 @@
     data: () => ({
       drawer: false,
       navHeaderCover: require('./assets/nav-header.png')
-    })
+    }),
+    methods: {
+      hideSnack () {
+        this.showSnackBar('')
+      }
+    }
   }
 </script>
 
@@ -113,6 +123,14 @@
       width: 100%;
       margin: 0;
       transform: translateY(100%);
+    }
+  }
+
+  .snack {
+    bottom: 56px;
+
+    .snack__content {
+      height: 56px;
     }
   }
 </style>
