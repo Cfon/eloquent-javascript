@@ -67,13 +67,20 @@
     }
 
     @media (max-width: 600px) {
-      .list__tile__title {
+      .list__tile__title, .list__tile__sub-title {
         font-size: 14px;
       }
+    }
+  }
 
-      .list__tile__sub-title {
-        font-size: 12px;
-      }
+  .toolbar {
+    .progress-linear {
+      position: absolute;
+      left: 0;
+      bottom: 0px;
+      width: 100%;
+      margin: 0;
+      transform: translateY(100%);
     }
   }
 </style>
