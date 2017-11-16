@@ -1,35 +1,40 @@
 <template>
-  <v-list id="chapters" two-line>
-    <v-list-tile
-      v-for="(chapter, index) in chapters"
-      :key="chapter._id"
-      :class="{ unsaved: !!chapter.unsaved }"
-      :to="'/chapter/' + chapter._id"
-    >
-      <v-list-tile-content>
-        <v-list-tile-title :class="{ 'bold': chapter.unsaved }">
-          <span>{{ chapter._id }}. {{ chapter.title }}</span><!--
-      --><span v-if="chapter.unsaved">*</span>
-        </v-list-tile-title>
-        <v-list-tile-sub-title>{{ datetimeToString(chapter.updated) }}</v-list-tile-sub-title>
-      </v-list-tile-content>
-      <v-list-tile-content class="progress">
-        <v-list-tile-title></v-list-tile-title>
-        <v-list-tile-sub-title>{{ progresses[index] }}%</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
-  </v-list>
+  <div id="overview">
+    <v-toolbar color="primary" app>
+      <v-toolbar-side-icon class="hidden-sm-and-up" @click.stop="$emit('open-drawer')"></v-toolbar-side-icon>
+      <v-toolbar-title>章节</v-toolbar-title>
+    </v-toolbar>
+    <main>
+      <v-content>
+        <v-list id="chapters" two-line>
+          <v-list-tile
+            v-for="(chapter, index) in chapters"
+            :key="chapter._id"
+            :class="{ unsaved: !!chapter.unsaved }"
+            :to="'/chapter/' + chapter._id"
+          >
+            <v-list-tile-content>
+              <v-list-tile-title :class="{ 'bold': chapter.unsaved }">
+                <span>{{ chapter._id }}. {{ chapter.title }}</span><!--
+            --><span v-if="chapter.unsaved">*</span>
+              </v-list-tile-title>
+              <v-list-tile-sub-title>{{ datetimeToString(chapter.updated) }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-content class="progress">
+              <v-list-tile-title></v-list-tile-title>
+              <v-list-tile-sub-title>{{ progresses[index] }}%</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-content>
+    </main>
+  </div>
 </template>
 
 <script>
   import { datetimeToString } from '../lib/util'
-  import IndexTitleMixin from 'mixins/index-title'
 
   export default {
-    mixins: [IndexTitleMixin],
-    data: () => ({
-      appTitle: '章节'
-    }),
     computed: {
       progresses () {
         return this.chapters.map(chapter => {
