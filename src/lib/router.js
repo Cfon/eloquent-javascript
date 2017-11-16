@@ -19,6 +19,7 @@ export default new VueRouter({
       ]
     },
     { path: '/chapter/:id', component: require('../pages/paragraphs').default },
-    { path: '/chapter/:chapterId/paragraph/:paragraphId', component: require('../pages/paragraph').default }
+    { path: '/chapter/:chapterId/paragraph/:paragraphId', component: require('../pages/paragraph').default },
+    { path: '/commit', component: require('../pages/commit').default }
   ]
 })
