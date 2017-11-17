@@ -41,15 +41,13 @@
         return !!this.unsavedCount
       },
       progress () {
-        if (this.fetching) return 0
-
         const data = this.chapters.reduce((result, chapter) => {
           result.passed += chapter.passed
           result.total += chapter.paragraphsCount
           return result
         }, { passed: 0, total: 0 })
 
-        return Math.round(data.passed / data.total * 1000) / 1000
+        return Math.round(data.passed / (data.total || 1) * 1000) / 1000
       }
     }
   }
