@@ -60,7 +60,7 @@
       async submit () {
         this.submitting = true
 
-        const result = await this.$http.patch('origin', this.data)
+        const result = (await this.$http.patch('origin', this.data)).data
         if (!result.code) {
           this.showSnackBar('提交成功')
           this.fetchData()

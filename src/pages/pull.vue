@@ -3,7 +3,6 @@
     <v-toolbar color="primary" app>
       <v-btn @click="$router.back()" :disabled="submitting" icon><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>合并更改</v-toolbar-title>
-      <v-spacer></v-spacer>
       <v-progress-linear v-if="submitting" color="accent" background-color="transparent" :height="2" :indeterminate="true"></v-progress-linear>
     </v-toolbar>
     <main>
@@ -42,7 +41,7 @@
       async submit () {
         this.submitting = true
 
-        const result = await this.$http.patch('local', this.data)
+        const result = (await this.$http.patch('local', this.data)).data
         if (!result.code) {
           this.showSnackBar('合并成功')
           this.fetchData()
