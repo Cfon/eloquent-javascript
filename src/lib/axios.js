@@ -20,5 +20,14 @@ axios.interceptors.response.use(response => {
     response.data = response.data.data
   }
 
+  // 确保错误数据有统一的格式
+  if ((response.status < 200 || response.status >= 400) && !response.data.code) {
+    response.data = {
+      code: -1,
+      data: response.data,
+      message: '未知错误'
+    }
+  }
+
   return response
 })
