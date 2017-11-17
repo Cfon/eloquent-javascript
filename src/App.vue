@@ -137,5 +137,36 @@
       height: 56px;
     }
   }
+
+  #commit, #pull {
+    .container {
+      height: 100%;
+      padding: 0;
+      padding-top: 4px;
+      display: flex;
+      flex-direction: column;
+
+      & > * {
+        flex: none;
+      }
+
+      .list {
+        flex: 1;
+        overflow: scroll;
+      }
+    }
+
+    .btn--floating {
+      position: absolute;
+    }
+
+    .list__tile:hover {
+      background-color: transparent;
+    }
+
+    input {
+      font-size: 14px;
+    }
+  }
 </style>
 
