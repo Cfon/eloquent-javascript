@@ -3,6 +3,7 @@
 import Tag from '../models/tag'
 import validate from '../lib/middlewares/validate'
 import * as Router from 'koa-router'
+import { AuthMiddleware } from '../lib/middlewares/auth'
 
 const router = new Router()
 
@@ -13,6 +14,7 @@ router.get('tags',
 )
 
 router.put('tags',
+  AuthMiddleware,
   validate({
     title: 'string',
     color: 'string'
@@ -24,6 +26,7 @@ router.put('tags',
 )
 
 router.patch('tag/:id',
+  AuthMiddleware,
   validate({
     title: 'string',
     color: 'string'
@@ -35,6 +38,7 @@ router.patch('tag/:id',
 )
 
 router.delete('tag/:id',
+  AuthMiddleware,
   async (ctx, next) => {
     await Tag.findByIdAndRemove(ctx.params.id)
     ctx.result = null

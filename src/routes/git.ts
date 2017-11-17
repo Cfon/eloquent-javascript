@@ -6,6 +6,7 @@ import * as git from '../processor/git'
 import * as meta from '../models/meta'
 import * as Router from 'koa-router'
 import { raw, required } from '../lib/ajv'
+import { AuthMiddleware } from '../lib/middlewares/auth'
 
 const router = new Router()
 
@@ -17,6 +18,7 @@ router.get('origin',
 
 // Commit and push
 router.patch('origin',
+  AuthMiddleware,
   validate({
     chapters: required(raw({
       type: 'array',
@@ -52,6 +54,7 @@ router.patch('origin',
 
 // Pull
 router.patch('local',
+  AuthMiddleware,
   validate({
     message: required(raw({
       type: 'string',

@@ -4,6 +4,7 @@ import validate from '../lib/middlewares/validate'
 import * as Router from 'koa-router'
 import { required } from '../lib/ajv'
 import { validateTags } from '../models/tag'
+import { AuthMiddleware } from '../lib/middlewares/auth'
 import Chapter, { getParagraph } from '../models/chapter'
 
 import {
@@ -79,6 +80,7 @@ router.get('chapter/:chapter/paragraph/:paragraph',
 )
 
 router.patch('chapter/:chapter/paragraph/:paragraph',
+  AuthMiddleware,
   validate({
     translation: 'string',
     tags: ['string']
