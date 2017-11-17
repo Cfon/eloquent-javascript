@@ -75,8 +75,8 @@ export async function mergeFile (filename: string) {
 
 export async function mergeRemote (message: string) {
   const pendingActions: (() => DocumentQuery<any, any> | Promise<any>)[] = []
-  const changes = (await status())
-    .filter(c => /^[012].*\.md$/.test(c.file))
+
+  const allChanges = (await status())
     .map(({ file, flag }) => ({
       file,
       flag,
@@ -84,6 +84,12 @@ export async function mergeRemote (message: string) {
       chapterId: parseInt(file, 10),
       paragraphs: null as Paragraph[] | null
     }))
+
+  if (allChanges.some(c => c.flag[0] === 'U' && !/^[012].*\.md$/.test(c.file))) {
+    throw new GitError('需要手动合并')
+  }
+
+  const changes = allChanges.filter(c => /^[012].*\.md$/.test(c.file))
 
   // firstly look for unmerged files
   const removedChapters: number[] = []
