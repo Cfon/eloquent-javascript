@@ -8,6 +8,9 @@
       <v-content>
         <v-container grid-list-xl>
           <v-layout row wrap justify-center>
+            <v-index-card title="进度" icon="book">
+              <v-card-text class="big-number">{{ progress }}%</v-card-text>
+            </v-index-card>
             <v-index-card title="仓库" icon="octicons-repo">
               <v-card-text class="git-repo-status">
                 <span class="big-number">{{ commitsBehind.length }}</span>
@@ -36,6 +39,17 @@
       },
       ahead () {
         return !!this.unsavedCount
+      },
+      progress () {
+        if (this.fetching) return 0
+
+        const data = this.chapters.reduce((result, chapter) => {
+          result.passed += chapter.passed
+          result.total += chapter.paragraphsCount
+          return result
+        }, { passed: 0, total: 0 })
+
+        return Math.round(data.passed / data.total * 1000) / 1000
       }
     }
   }
@@ -47,6 +61,7 @@
       font-size: 34px;
       font-weight: 300;
       line-height: 40px;
+      text-align: center;
 
       &:first-child {
         padding-left: 8px;
