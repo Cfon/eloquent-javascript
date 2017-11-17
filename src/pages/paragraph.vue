@@ -215,7 +215,7 @@
           this.showSnackBar('段落已保存')
         } else {
           // TODO: 错误处理
-          this.showSnackBar(`段落保存失败 (${result.code})`)
+          this.showSnackBar(`段落保存失败：${result.message}`)
         }
 
         this.submitting = false
