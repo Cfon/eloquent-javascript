@@ -47,3 +47,5 @@ export default function AuthMiddlewareFactory (...skips: RegExp[]) {
     throw new TokenAuthorizationError()
   }) as Middleware
 }
+
+export const AuthMiddleware = AuthMiddlewareFactory()
