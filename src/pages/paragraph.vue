@@ -67,7 +67,7 @@
             <v-divider></v-divider>
             <v-container>
               <div class="section-title">原文</div>
-              <div v-html="paragraph.source.html"></div>
+              <div class="original-content" v-html="paragraph.source.html"></div>
             </v-container>
             <v-divider></v-divider>
             <v-container>
@@ -247,6 +247,10 @@
 
 <style lang="scss">
   #paragraph {
+    .original-content, .original-content pre {
+      overflow: auto;
+    }
+
     main {
       flex: 1;
       margin-bottom: 56px;
@@ -296,10 +300,6 @@
 
       .add-tag {
         display: inline-block;
-      }
-
-      .original-content {
-        overflow: auto;
       }
 
       .copy {
