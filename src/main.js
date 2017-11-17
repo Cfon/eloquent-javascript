@@ -17,6 +17,7 @@ Vue.use(VuetifyHelper)
 Vue.mixin(VuexMixin)
 Vue.config.productionTip = false
 
+store.dispatch('setToken', localStorage.getItem('ejs-token') || '')
 store.dispatch('fetchData')
 
 /* eslint-disable no-new */

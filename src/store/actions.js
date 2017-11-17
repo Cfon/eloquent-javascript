@@ -57,5 +57,15 @@ export default {
   },
   showSnackBar ({ commit }, message) {
     commit('SET_SNACK_MESSAGE', message)
+  },
+  async setToken ({ commit }, token) {
+    if (token) {
+      const result = (await axios.get('echo', { headers: { Authorization: token } })).data
+      if (result.code) return false
+    }
+
+    localStorage.setItem('ejs-token', token)
+    commit('SET_TOKEN', token)
+    return true
   }
 }

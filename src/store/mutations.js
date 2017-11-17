@@ -27,5 +27,8 @@ export default {
   },
   SET_SNACK_MESSAGE (store, message) {
     store.snackMessage = message
+  },
+  SET_TOKEN (store, token) {
+    store.authToken = token
   }
 }
