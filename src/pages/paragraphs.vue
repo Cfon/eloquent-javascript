@@ -45,7 +45,8 @@
 <script>
   export default {
     data: () => ({
-      id: null        // 切换路由时 paramId 会变为 undefined, 所以要缓存一下 id
+      id: null,       // 切换路由时 paramId 会变为 undefined, 所以要缓存一下 id
+      savedScrollTop: {}
     }),
     computed: {
       paramId () {
@@ -83,6 +84,12 @@
 
         this.id = this.paramId
         return true
+      },
+      async routeEnter () {
+        if (await this.checkChapterId()) {
+          await this.fetch()
+          this.$el.querySelector('.content').scrollTo(0, this.savedScrollTop[this.id] || 0)
+        }
       }
     },
     mounted () {
@@ -90,9 +97,11 @@
       el.addEventListener('scroll', this.fetch)
     },
     beforeRouteEnter (to, from, next) {
-      next(async vm => {
-        vm.checkChapterId().then(result => result && vm.fetch())
-      })
+      next(vm => vm.routeEnter())
+    },
+    beforeRouteLeave (to, from, next) {
+      this.savedScrollTop[this.id] = this.$el.querySelector('.content').scrollTop
+      next()
     }
   }
 </script>
