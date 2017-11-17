@@ -35,8 +35,8 @@ router.patch('origin',
     let count = 0
     for (const chapter of chapters) {
       if (await chapter.commit(message)) {
-        await git.add(chapter.file)
         await chapter.export()
+        await git.add(chapter.file)
         count++
       }
     }
