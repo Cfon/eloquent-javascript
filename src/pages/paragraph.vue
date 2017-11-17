@@ -24,7 +24,7 @@
                 close
               >{{ tags[tag].title }}</v-chip>
               <v-menu>
-                <v-btn class="add-tag" slot="activator" icon small><v-icon>add</v-icon></v-btn>
+                <v-btn class="add-tag" slot="activator" :disabled="submitting" icon small><v-icon>add</v-icon></v-btn>
                 <v-list id="add-tag-menu">
                   <v-list-tile v-for="tag in tagsAddable" :key="tag" @click="editing.tags.push(tag)">
                     <div class="tag-color" :style="{ backgroundColor: tags[tag].color }"></div>
@@ -49,6 +49,7 @@
                 placeholder="在此编辑译文" wrap="off"
                 :rows="rows"
                 :value="editing.translation"
+                :disabled="submitting"
                 @input="updateTranslation"
               ></textarea>
             </v-container>
@@ -199,6 +200,8 @@
         this.rows = e.target.value.split('\n').length + 1
       },
       removeTag (tag) {
+        if (this.submitting) return
+
         const index = this.editing.tags.indexOf(tag)
         if (index !== -1) {
           this.editing.tags.splice(index, 1)
@@ -310,7 +313,7 @@
       .translation-editor {
         width: 100%;
         display: block;
-        font-family: Inconsolata, monospace;
+        font-family: Inconsolata, 'PingFang SC', 'Microsoft YaHei', monospace;
         font-size: 14px;
         resize: none;
         outline: none;
