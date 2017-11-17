@@ -77,7 +77,7 @@
             </v-container>
           </v-content>
         </transition>
-        <v-fab-transition mode="out-in">
+        <v-fab-transition v-if="authToken" mode="out-in">
           <v-btn v-if="editing" key="check" color="green" @click="submit" dark right bottom fab><v-icon>check</v-icon></v-btn>
           <v-btn v-else key="edit" color="accent" @click="edit" dark right bottom fab><v-icon>edit</v-icon></v-btn>
         </v-fab-transition>

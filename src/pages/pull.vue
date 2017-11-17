@@ -30,6 +30,8 @@
 </template>
 
 <script>
+  import store from '../store'
+
   export default {
     data: () => ({
       submitting: false,
@@ -50,6 +52,9 @@
 
         this.submitting = false
       }
+    },
+    beforeRouteEnter (to, from, next) {
+      next(!!store.state.authToken)
     },
     beforeRouteLeave (to, from, next) {
       next(!this.submitting)

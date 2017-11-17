@@ -18,8 +18,8 @@
                 <span class="big-number">{{ unsavedCount }}</span>
                 <v-icon color="black">arrow_upward</v-icon>
               </v-card-text>
-              <v-divider v-if="behind || ahead"></v-divider>
-              <v-card-actions v-if="behind || ahead">
+              <v-divider v-if="authToken && (behind || ahead)"></v-divider>
+              <v-card-actions v-if="authToken && (behind || ahead)">
                 <v-btn v-if="ahead" flat color="accent" @click="$router.push('/commit')">提交更改</v-btn>
                 <v-btn v-if="behind" flat color="accent" @click="$router.push('/pull')">合并更改</v-btn>
               </v-card-actions>
