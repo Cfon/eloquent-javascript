@@ -138,7 +138,6 @@
       datetimeToString,
       async fetch () {
         if (!this.submitting) {
-          if (this.loading) return
           this.loading = true
         }
 
@@ -179,8 +178,12 @@
         }
       },
       updateIds (params = this.$route.params) {
-        this.chapterId = params.chapterId
-        this.paragraphId = params.paragraphId
+        if (this.chapterId === params.chapterId && this.paragraphId === params.paragraphId) {
+          this.loading = false
+        } else {
+          this.chapterId = params.chapterId
+          this.paragraphId = params.paragraphId
+        }
       },
       edit () {
         this.editing = {
@@ -236,7 +239,13 @@
       this.updateIds(to.params)
     },
     beforeRouteLeave (to, from, next) {
-      next(!this.submitting)
+      if (!this.submitting) {
+        this.editing = null
+        this.loading = true
+        next()
+      } else {
+        next(false)
+      }
     },
     watch: {
       chapterId () { this.fetch() },
