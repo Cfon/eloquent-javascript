@@ -14,6 +14,9 @@
       <v-list>
         <v-nav-drawer-item icon="home" to="/overview" replace exact>总览</v-nav-drawer-item>
         <v-nav-drawer-item icon="book" to="/chapters" replace>章节</v-nav-drawer-item>
+        <v-spacer></v-spacer>
+        <v-divider></v-divider>
+        <v-nav-drawer-item icon="vpn_key" to="/token">授权设置</v-nav-drawer-item>
       </v-list>
     </v-navigation-drawer>
     <transition name="fade" mode="in-out">
@@ -102,6 +105,23 @@
     }
   }
 
+  .navigation-drawer {
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+
+    ul {
+      padding-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+
+      hr {
+        flex: none;
+      }
+    }
+  }
+
   #chapters, #paragraphs {
     .list__tile__title {
       font-size: 16px;
@@ -168,4 +188,3 @@
     }
   }
 </style>
-
