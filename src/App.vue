@@ -14,7 +14,6 @@
       <v-list>
         <v-nav-drawer-item icon="home" to="/overview" replace exact>总览</v-nav-drawer-item>
         <v-nav-drawer-item icon="book" to="/chapters" replace>章节</v-nav-drawer-item>
-        <v-nav-drawer-item icon="label" to="/tags" replace>标签</v-nav-drawer-item>
       </v-list>
     </v-navigation-drawer>
     <transition name="fade" mode="in-out">

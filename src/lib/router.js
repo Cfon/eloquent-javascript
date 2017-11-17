@@ -9,9 +9,8 @@ export default new VueRouter({
   base: '/eloquent-javascript/translator',
   mode: 'history',
   routes: [
-      { path: '/overview', component: require('../pages/overview').default, alias: '/' },
-      { path: '/chapters', component: require('../pages/chapters').default },
-      { path: '/tags', component: require('../pages/tags').default },
+    { path: '/overview', component: require('../pages/overview').default, alias: '/' },
+    { path: '/chapters', component: require('../pages/chapters').default },
     { path: '/chapter/:id', component: require('../pages/paragraphs').default },
     { path: '/chapter/:chapterId/paragraph/:paragraphId', component: require('../pages/paragraph').default },
     { path: '/commit', component: require('../pages/commit').default },
