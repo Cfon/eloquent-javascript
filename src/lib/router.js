@@ -14,6 +14,7 @@ export default new VueRouter({
       { path: '/tags', component: require('../pages/tags').default },
     { path: '/chapter/:id', component: require('../pages/paragraphs').default },
     { path: '/chapter/:chapterId/paragraph/:paragraphId', component: require('../pages/paragraph').default },
-    { path: '/commit', component: require('../pages/commit').default }
+    { path: '/commit', component: require('../pages/commit').default },
+    { path: '/pull', component: require('../pages/pull').default }
   ]
 })
