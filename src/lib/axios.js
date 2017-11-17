@@ -1,5 +1,6 @@
 'use strict'
 
+import store from '../store'
 import axiosRaw from 'axios'
 
 export const axios = axiosRaw.create({
@@ -13,6 +14,14 @@ export const AxiosPlugin = {
     Vue.prototype.$http = axios
   }
 }
+
+axios.interceptors.request.use(request => {
+  if (!request.headers.Authorization && store.state.authToken) {
+    request.headers.Authorization = store.state.authToken
+  }
+
+  return request
+})
 
 axios.interceptors.response.use(response => {
   // 解开一层请求的数据
