@@ -60,8 +60,8 @@ export default {
   },
   async setToken ({ commit }, token) {
     if (token) {
-      const result = (await axios.get('echo', { headers: { Authorization: token } })).data
-      if (result.code) return false
+      const result = (await axios.get('echo', { headers: { Authorization: `Bearer ${token}` } })).data
+      if (result && result.code) return false
     }
 
     localStorage.setItem('ejs-token', token)

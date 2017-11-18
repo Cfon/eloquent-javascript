@@ -17,7 +17,7 @@ export const AxiosPlugin = {
 
 axios.interceptors.request.use(request => {
   if (!request.headers.Authorization && store.state.authToken) {
-    request.headers.Authorization = store.state.authToken
+    request.headers.Authorization = `Bearer ${store.state.authToken}`
   }
 
   return request
