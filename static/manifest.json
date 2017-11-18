@@ -1,6 +1,6 @@
 {
   "name": "Eloquent JavaScript",
-  "short_name": "EloquentJS",
+  "short_name": "Eloquent JavaScript",
   "icons": [
     {
       "src": "img/icons/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "https://huajingkun.com/eloquent-javascript/translator/overview",
+  "start_url": "https://huajingkun.com/eloquent-javascript/translator/index.html",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#FFD01D"
