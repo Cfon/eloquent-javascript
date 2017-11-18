@@ -98,11 +98,11 @@ var webpackConfig = merge(baseWebpackConfig, {
     ]),
     // service worker caching
     new SWPrecacheWebpackPlugin({
-      cacheId: 'my-vue-app',
+      cacheId: 'eloquent-javascript-translator',
       filename: 'service-worker.js',
-      staticFileGlobs: ['dist/**/*.{js,html,css}'],
       minify: true,
-      stripPrefix: 'dist/'
+      navigateFallback: '/eloquent-javascript/translator/index.html',
+      templateFilePath: path.join(__dirname, '../src/assets/service-worker.tmpl')
     })
   ]
 })
