@@ -9,6 +9,7 @@
         <v-toolbar-title v-if="editing" key="editing">编辑段落</v-toolbar-title>
         <v-toolbar-title v-else key="previewing">{{ chapter.title }}</v-toolbar-title>
       </transition>
+      <v-toolbar-loading></v-toolbar-loading>
     </v-toolbar>
     <transition name="fade" mode="out-in">
       <main v-if="!loading" :class="{ editing }">
@@ -78,8 +79,8 @@
           </v-content>
         </transition>
         <v-fab-transition v-if="authToken" mode="out-in">
-          <v-btn v-if="editing" key="check" color="green" @click="submit" dark right bottom fab><v-icon>check</v-icon></v-btn>
-          <v-btn v-else key="edit" color="accent" @click="edit" dark right bottom fab><v-icon>edit</v-icon></v-btn>
+          <v-btn v-if="editing && !submitting" key="check" color="green" @click="submit" dark right bottom fab><v-icon>check</v-icon></v-btn>
+          <v-btn v-else-if="!editing" key="edit" color="accent" @click="edit" dark right bottom fab><v-icon>edit</v-icon></v-btn>
         </v-fab-transition>
       </main>
       <v-layout v-else align-center justify-center>
