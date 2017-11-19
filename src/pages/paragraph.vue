@@ -219,6 +219,13 @@
         if (result == null) {
           await this.fetchData()
           await this.fetch()
+
+          this.$store.commit('SET_PARAGRAPH', {
+            chapterId: this.chapterId,
+            paragraphId: this.paragraphId,
+            data: this.editing
+          })
+
           this.showSnackBar('段落已保存')
         } else {
           // TODO: 错误处理

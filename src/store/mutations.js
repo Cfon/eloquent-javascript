@@ -25,6 +25,12 @@ export default {
   PUSH_PARAGRAPHS (store, { chapterId, paragraphs }) {
     store.chapters[chapterId].paragraphs = store.chapters[chapterId].paragraphs.concat(paragraphs)
   },
+  SET_PARAGRAPH (store, { chapterId, paragraphId, data }) {
+    const paragraph = store.chapters[chapterId].paragraphs.find(p => p._id === paragraphId)
+    if (paragraph) {
+      Object.assign(paragraph, data)
+    }
+  },
   SET_SNACK_MESSAGE (store, message) {
     store.snackMessage = message
   },
