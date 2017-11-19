@@ -3,7 +3,7 @@
     <v-toolbar color="primary" app>
       <v-btn @click="$router.back()" :disabled="submitting" icon><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>授权设置</v-toolbar-title>
-      <v-progress-linear v-if="submitting" color="accent" background-color="transparent" :height="2" :indeterminate="true"></v-progress-linear>
+      <v-toolbar-loading></v-toolbar-loading>
     </v-toolbar>
     <main>
       <v-content>

@@ -138,17 +138,6 @@
     }
   }
 
-  .toolbar {
-    .progress-linear {
-      position: absolute;
-      left: 0;
-      bottom: 0px;
-      width: 100%;
-      margin: 0;
-      transform: translateY(100%);
-    }
-  }
-
   .snack {
     bottom: 56px;
 

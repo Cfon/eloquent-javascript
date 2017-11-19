@@ -5,7 +5,7 @@
       <v-toolbar-title>提交更改</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn @click="selectAll" icon><v-icon>select_all</v-icon></v-btn>
-      <v-progress-linear v-if="submitting" color="accent" background-color="transparent" :height="2" :indeterminate="true"></v-progress-linear>
+      <v-toolbar-loading></v-toolbar-loading>
     </v-toolbar>
     <main>
       <v-content>
