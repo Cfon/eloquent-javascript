@@ -3,7 +3,7 @@
 import { axios } from '../lib/axios'
 
 export default {
-  fetchData ({ commit }) {
+  fetchData ({ state, commit }) {
     const promises = ['tags', 'chapters', 'origin'].map(s => axios.get(s))
     const promise = Promise.all(promises).then(result => {
       if (result.every(item => item.status === 200)) {
@@ -14,11 +14,14 @@ export default {
           return tags
         }, {}))
 
-        commit('SET_CHAPTERS', chapters.data.map(chapter => Object.assign(chapter, {
-          fetching: false,
-          paragraphs: [],
-          paragraphsCount: chapter.paragraphs
-        })))
+        commit('SET_CHAPTERS', chapters.data.map(chapter => {
+          const oldChapter = state.chapters.find(c => c._id === chapter._id)
+          return Object.assign(chapter, {
+            fetching: false,
+            paragraphs: oldChapter ? oldChapter.paragraphs.slice() : [],
+            paragraphsCount: chapter.paragraphs
+          })
+        }))
 
         commit('SET_COMMITS_BEHIND', commitsBehind.data)
       } else {
