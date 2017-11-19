@@ -3,18 +3,20 @@
     <v-toolbar color="primary" app>
       <v-btn @click="$router.back()" icon><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>{{ chapter.title }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn @click="preview = !preview" icon><v-icon>{{ preview ? 'list' : 'find_in_page' }}</v-icon></v-btn>
     </v-toolbar>
     <main>
       <v-content id="paragraphs-list">
         <v-list three-line>
           <template v-for="(paragraph, index) in paragraphs">
-            <v-divider v-if="index !== 0" :key="paragraph._id + 'divider'" inset></v-divider>
-            <v-list-tile :key="paragraph._id" :to="`/chapter/${id}/paragraph/${paragraph._id}`" avatar>
-              <v-badge color="accent" :value="paragraph.unsaved" overlap>
+            <v-divider v-if="index !== 0 && !preview" :key="paragraph._id + 'divider'" inset></v-divider>
+            <v-list-tile :key="paragraph._id" :to="`/chapter/${id}/paragraph/${paragraph._id}`" :avatar="!preview">
+              <v-badge v-if="!preview" color="accent" :value="paragraph.unsaved" overlap>
                 <span slot="badge"></span>
                 <v-list-tile-avatar size="36px" class="paragraph-index primary">{{ paragraph.index + 1 }}</v-list-tile-avatar>
               </v-badge>
-              <v-list-tile-content>
+              <v-list-tile-content v-if="!preview">
                 <v-list-tile-title
                   v-if="paragraph.type === 'unknown'"
                   :class="{ expanded: !paragraph.tags.length }"
@@ -31,6 +33,7 @@
                   >{{ tags[tag].title }}</v-chip>
                 </v-list-tile-sub-title>
               </v-list-tile-content>
+              <v-list-tile-content v-else v-html="paragraph.preview"></v-list-tile-content>
             </v-list-tile>
           </template>
         </v-list>
@@ -46,7 +49,8 @@
   export default {
     data: () => ({
       id: null,       // 切换路由时 paramId 会变为 undefined, 所以要缓存一下 id
-      savedScrollTop: {}
+      savedScrollTop: {},
+      preview: false
     }),
     computed: {
       paramId () {

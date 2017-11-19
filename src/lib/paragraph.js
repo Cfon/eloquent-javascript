@@ -26,7 +26,7 @@ function parseMeta (meta) {
   }
 }
 
-export default async function renderHTML (source) {
+export default function renderHTML (source) {
   let type = 'paragraph', html = '', data = {}
 
   if (source.startsWith('#')) {
