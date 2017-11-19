@@ -8,10 +8,7 @@
     </v-toolbar>
     <main>
       <v-content id="paragraphs-list">
-        <div v-if="loading" class="loading">
-          <v-progress-circular indeterminate color="primary"></v-progress-circular>
-        </div>
-        <v-container v-else-if="preview" id="preview" v-html="previewHTML"></v-container>
+        <v-container v-if="preview" id="preview" v-html="previewHTML"></v-container>
         <v-list v-else three-line>
           <template v-for="(paragraph, index) in paragraphs">
             <v-divider v-if="index !== 0" :key="paragraph._id + 'divider'" inset></v-divider>
@@ -40,6 +37,9 @@
             </v-list-tile>
           </template>
         </v-list>
+        <div v-if="loading" class="loading">
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </div>
       </v-content>
     </main>
   </div>
@@ -75,7 +75,7 @@
       }
     },
     methods: {
-      async fetch () {
+      fetch () {
         const el = this.$el.querySelector('#paragraphs-list')
         const listEl = el.querySelector('ul') || el.querySelector('#preview')
 
@@ -84,16 +84,7 @@
           listEl.getBoundingClientRect().height <= window.innerHeight ||
           el.scrollTop + el.getBoundingClientRect().height > el.scrollHeight - 100
         )) {
-          let scrollTop = 0
-          if (this.preview) {
-            scrollTop = this.$el.querySelector('.content').scrollTop
-          }
-
-          await this.fetchChapter(this.id)
-
-          if (this.preview) {
-            this.$el.querySelector('.content').scrollTo(0, scrollTop)
-          }
+          return this.fetchChapter(this.id)
         }
       },
       async checkChapterId () {
