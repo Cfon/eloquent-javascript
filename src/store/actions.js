@@ -1,6 +1,7 @@
 'use strict'
 
 import { axios } from '../lib/axios'
+import renderHTML from '../lib/paragraph'
 
 export default {
   fetchData ({ state, commit }) {
@@ -44,9 +45,8 @@ export default {
         const url = `chapter/${chapterId}/paragraphs/${nextPage}`
         const { items: paragraphs } = (await axios.get(url)).data
 
-        const renderHTML = (await import(/* webpackChunkName: "markdown" */ '../lib/paragraph')).default
         for (const paragraph of paragraphs) {
-          Object.assign(paragraph, await renderHTML(paragraph.source))
+          Object.assign(paragraph, renderHTML(paragraph.source))
         }
 
         commit('PUSH_PARAGRAPHS', { chapterId, paragraphs })
