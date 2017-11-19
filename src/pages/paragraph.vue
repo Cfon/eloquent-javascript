@@ -322,6 +322,7 @@
 
       .translation-editor {
         width: 100%;
+        padding-bottom: 64px;
         display: block;
         font-family: Inconsolata, 'PingFang SC', 'Microsoft YaHei', monospace;
         font-size: 14px;
