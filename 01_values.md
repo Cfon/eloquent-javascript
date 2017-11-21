@@ -2,6 +2,7 @@
 @!2b2117042500ecb9a69d3670a9b9349426864603
 
 # Values, Types, and Operators
+@# 值、类型和运算符
 @!881947f146450e0bd5ddc12c8440a8e10ab70dd5
 
 {{quote {author: "Master Yuan-Ma", title: "The Book of Programming", chapter: true}
@@ -23,6 +24,9 @@ Inside the computer's world, there is only data. You can read data,
 modify data, create new data—but anything that isn't data can not be
 talked about. All this data is stored as long sequences of bits and is
 thus fundamentally alike.
+@在计算机的世界里只有**数据**。
+@你可以读取数据、添加数据、修改数据，但任何不能用数据来表示的东西对于计算机而言是没有任何意义的。
+@所有数据本质上都是由比特序列（bit sequences）组成的。
 @!3d650ea04cb5491a2c8461f7f9d2545860e1e78b
 
 {{index CD, signal}}
@@ -33,6 +37,10 @@ ones. Inside the computer, they take forms such as a high or low
 electrical charge, a strong or weak signal, or a shiny or dull spot on
 the surface of a CD. Any piece of discrete information can be reduced
 to a sequence of zeros and ones and thus represented in bits.
+@“比特”是一个只能是 0 或 1 的东西。
+@在计算机中可以有很多种方式来表示一个比特：
+@高电荷或低电荷、强信号或弱信号、光盘上的一个小亮点或小暗点……
+@所有像这样的离散信息都可以被简化为 0 和 1 的序列，进而被表示为比特序列。
 @!0f8a9ed06835248cabab087de51e8be94b1278e4
 
 {{index "binary number", radix, "decimal number"}}
@@ -44,6 +52,12 @@ different ((digit))s, you have only 2, and the weight of each
 increases by a factor of 2 from right to left. Here are the bits that
 make up the number 13, with the weights of the digits shown below
 them:
+@举个例子，怎样使用几个比特来表示 13 这个数字？
+@实际上这跟你表示普通的数字的方法很像。
+@我们在表示数字的时候使用了 10 个不同的数字（十进制），
+@但在使用比特的时候你只有两个数字。
+@每个数字的权重按 2 的指数幂从右到左递增。这就是二进制的表示方法。
+@下面是使用二进制来表示 13 的具体方法，二进制中的每一位的权重都显示在它的下面：
 @!8c66fd41d10b36ce9201e8ed13b708b340b53a06
 
 ```{lang: null}
@@ -53,9 +67,11 @@ them:
 @!7c1402ac04c8215d2a3d58a38242b32ae2aecfe5
 
 So that's the binary number 00001101, or 8 + 4 + 1, which equals 13.
+@可以看出 13 的二进制表示为 00001101，即 8 + 4 + 1 = 13。
 @!e0e2b1c034fba9f755791b225363b5b8291c1729
 
 ## Values
+@## 值
 @!887d9fc8064d28e27e93a490526b56bddd5df383
 
 {{index memory, "volatile data storage", "hard drive"}}
@@ -65,6 +81,9 @@ Imagine a sea of bits. An ocean of them. A typical modern computer has
 more than 30 billion bits in its volatile data storage. Nonvolatile
 storage (the hard disk or equivalent) tends to have yet a few orders
 of magnitude more.
+@想象一下一个由比特所组成的海洋。
+@在一台常见的现代计算机的易失性储存器（volatile data storage）中就储存着超过 300 亿个比特。
+@这个数字在非易失性储存器（例如硬盘）中甚至还要更大的多。
 @!46bf4fa9aaffbf2164de5b02e624b0b11f166018
 
 To be able to work with such quantities of bits without getting lost,
@@ -74,6 +93,12 @@ _((value))s_. Though all values are made of bits, they play different
 roles. Every value has a ((type)) that determines its role. Some
 values are numbers, some values are pieces of text, some values are
 functions, and so on.
+@为了能够在处理如此大量数据的时候不会被绕晕，
+@我们通常把它们分成许多只表示一小部分信息的块（chunk），
+@这样的块就叫作**值**。
+@虽然所有的值都由比特组成，
+@但它们根据各自**类型**的不同而各扮演者着不同的角色。
+@这些值可能是数字，可能是一些文字，还有可能是一些函数等等。
 @!2cb456b7ababb036b35cc18f1e3265e4e2fb99fd
 
 {{index "garbage collection"}}
@@ -88,14 +113,25 @@ the same time, you might run out of memory. Fortunately, this is a
 problem only if you need them all simultaneously. As soon as you no
 longer use a value, it will dissipate, leaving behind its bits to be
 recycled as building material for the next generation of values.
+@To create a value, you must merely invoke its name. This is convenient.
+@你不需要去收集构建一个值的相关材料，也不需要购买它们。
+@只需 call for one 即可拥有。
+@它们当然不是凭空而生，它们要被储存在某个地方。
+@如果你想同时使用很多很多的值，你可能会遇到内存不足的问题。
+@幸运的是只有当你同时需要很多值的时候才会遇到这个问题。
+@只要你一不使用它，它就会消失殆尽。
+@它所使用的空间会被下一个值所使用。
 @!45db0bc5e590a7ad7e6beefc958cf0c95b0b2eaa
 
 This chapter introduces the atomic elements of JavaScript programs,
 that is, the simple value types and the operators that can act on such
 values.
+@本章介绍 JavaScript 程序中的原子元素：
+@基本值类型和可以操作这些值的运算符。
 @!e3f9c2a3e1594b6363ed94385dc54e870483156d
 
 ## Numbers
+@## 数字
 @!f8c6d0177c49bd800decd91ad449037fe57342fd
 
 {{index syntax, number, [number, notation]}}
@@ -103,6 +139,8 @@ values.
 
 Values of the _number_ type are, unsurprisingly, numeric values. In a
 JavaScript program, they are written as follows:
+@**数字**类型的值就是数值。
+@在 JavaScript 程序中，我们这样表示数值：
 @!8edff719f142bd242cb8392bd2fed23be5905c8a
 
 ```
@@ -115,6 +153,8 @@ JavaScript program, they are written as follows:
 
 Use that in a program, and it will cause the bit pattern for the
 number 13 to come into existence inside the computer's memory.
+@如果你在程序中使用它，计算机内存中
+@就会出现一块表示 13 的比特串。
 @!e23b6ead979ae3123a047b0821e981e7eb12b0e6
 
 {{index [number, representation], bit}}
@@ -127,6 +167,11 @@ represented is limited. For _N_ decimal ((digit))s, the amount of
 numbers that can be represented is 10^_N_^. Similarly, given 64 binary
 digits, you can represent 2^64^ different numbers, which is about 18
 quintillion (an 18 with 18 zeros after it). This is a lot.
+@JavaScript 固定使用 64 比特来储存一个数字。
+@用固定 64 个比特只能表示有限个的数字。
+@如果用 _N_ 位 10 进制数字只能表示 10 ^_N_^ 个不同的数字。
+@类似地，用 64 个二进制位只能表示 2^64^（大概是 18 后面再加 18 个 0）个不同的数字。
+@这样已经能表示很多数字了。
 @!dc97fd1fc4a3e4b7f9ae4fa1855becb777beb72f
 
 Computer memory used to be a lot smaller, and people tended to use
@@ -136,6 +181,12 @@ that did not fit into the given amount of bits. Today, even personal
 computers have plenty of memory, so you are free to use 64-bit chunks,
 which means you need to worry about overflow only when dealing with
 truly astronomical numbers.
+@在以前，计算机的内存很小。
+@那时候的人们更愿意使用 8 位或 16 位比特来表示数字。
+@使用这么少的位数很容易造成**((溢出))**——即二进制位数不足以表示某个较大的数。
+@现在，就算是个人电脑（PC）也有很多的内存。
+@你可以自由地使用 64 位数字而不用担心数字溢出的问题，
+@除非你真的要处理天文数字。
 @!32d54f931e1d7c6001069f59210e37b76a6d5200
 
 {{index sign, "floating-point number", "fractional number", "sign bit"}}
@@ -148,12 +199,18 @@ also be represented. To do this, some of the bits are used to store
 the position of the decimal point. The actual maximum whole number
 that can be stored is more in the range of 9 quadrillion (15 zeros),
 which is still pleasantly huge.
+@但并不是所有小于 18 千万亿的整数都能在 JavaScript 中表示。
+@负数也是以同样的方式储存的，所以需要用一个比特来表示一个数的正负。
+@那么问题来了，不是整数的数如何使用类似的方式储存？
+@一些比特必须用来储存小数点的位置。就算是这样，JavaScript 能储存的最大整数还是很大，
+@大概是 9 千万亿（15 个 0）。
 @!b0470d06482d5b62665163a8fb9d77d0232b7df1
 
 {{index [number, notation]}}
 @!86758fded43ef0e0746109b481d088a8f44f34c3
 
 Fractional numbers are written by using a dot.
+@使用小数点来表示小数：
 @!41c57223e2828ed9893a778d2af7ca3abdfcb738
 
 ```
@@ -167,6 +224,8 @@ Fractional numbers are written by using a dot.
 For very big or very small numbers, you may also use scientific
 notation by adding an “e” (for “exponent”), followed by the exponent
 of the number:
+@对于很大或者很小的数，你可以使用科学记数法，
+@在数字后面加上一个“e”，再加上指数。
 @!2b000c893f660b88131b6e1ccbfbc9c8ca81942b
 
 ```
@@ -175,6 +234,7 @@ of the number:
 @!8616480bf6f68a44ccb5681b629d39a850354342
 
 That is 2.998 × 10^8^ = 299,800,000.
+@这样表示 2.998 × 108 = 299,800,000。
 @!3d6c1dbe8e322c8f2c94fee9966844492773c96c
 
 {{index pi, [number, "precision of"], "floating-point number"}}
@@ -189,9 +249,17 @@ only 64 bits are available to store them. This is a shame, but it
 causes practical problems only in specific situations. The important
 thing is to be aware of it and treat fractional digital numbers as
 approximations, not as precise values.
+@对小于 9 千万亿的整数（也可以说**整型数字**，integer）算数运算可以保证是精确的。
+@可惜的是小数运算通常都不是精确的。
+@就像 π（圆周率）不能被有限位数的小数所表示一样，
+@许多数字在仅用 64 比特储存时会丢失精度。
+@这是一件很丢脸的事情，但它只在特定情况下会引发问题。
+@重点是，你要意识到这个问题的存在，
+@然后在使用小数的时候把它们当成近似值而不是精确的值来使用。
 @!c85ad9de27107368a0c9cc76f50bce10ee8b205d
 
 ### Arithmetic
+@### 算数运算
 @!90f54332715f90446a5a664422d8680543ebbe86
 
 {{index syntax, operator, "binary operator", arithmetic, addition, multiplication}}
@@ -200,6 +268,9 @@ approximations, not as precise values.
 The main thing to do with numbers is arithmetic. Arithmetic operations
 such as addition or multiplication take two number values and produce
 a new number from them. Here is what they look like in JavaScript:
+@处理数字主要就是对他们进行算数运算。
+@算数运算操作（例如加和乘）从两个数字中生成一个新的数字。
+@它们在 JavaScript 中长这样：
 @!63e7e90d3114440427cdced66eedae2e8d5cae58
 
 ```
@@ -214,6 +285,10 @@ The `+` and `*` symbols are called _operators_. The first stands for
 addition, and the second stands for multiplication. Putting an
 operator between two values will apply it to those values and produce
 a new value.
+@我们称 `+` 和 `*` 符号为**运算符**。
+@第一个符号表示加法，第二个符号表示乘法。
+@通过把一个运算符放在两个值之间，来对它们执行对应的运算，
+@并产生一个新的值。
 @!744a7741209597485c91af84d6d525de810dc603
 
 {{index grouping, parentheses, precedence}}
@@ -223,6 +298,11 @@ Does the example mean “add 4 and 100, and multiply the result by 11”,
 or is the multiplication done before the adding? As you might have
 guessed, the multiplication happens first. But as in mathematics, you
 can change this by wrapping the addition in parentheses.
+@这个例子是在说“先把 4 和 100 相加，然后把结果乘以 11”吗？
+@还是说先乘法再加法呢？
+@As you might have
+@guessed, the multiplication happens first. But as in mathematics, you
+@can change this by wrapping the addition in parentheses.
 @!51a2cda0cde946d455f04ca594dabc767fbe6b2e
 
 ```
