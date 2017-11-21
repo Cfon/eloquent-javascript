@@ -3,6 +3,7 @@
 import validate from '../lib/middlewares/validate'
 import * as Router from 'koa-router'
 import { required } from '../lib/ajv'
+import { difference } from 'lodash'
 import { validateTags } from '../models/tag'
 import { AuthMiddleware } from '../lib/middlewares/auth'
 import Chapter, { getParagraph } from '../models/chapter'
@@ -96,14 +97,18 @@ router.patch('chapter/:chapter/paragraph/:paragraph',
       translation = paragraph.translation,
       tags = paragraph.tags
     } = ctx.request.body
+    const unsaved = paragraph.lastHistory ? (
+      paragraph.lastHistory.translation !== translation ||
+      !difference(paragraph.lastHistory.tags, tags).length
+    ) : true
 
     await validateTags(tags)
 
     Object.assign(paragraph, {
       tags,
+      unsaved,
       translation,
-      updated: new Date(),
-      unsaved: paragraph.lastHistory ? paragraph.lastHistory.translation !== translation : true
+      updated: new Date()
     })
 
     chapter.updateTitle()
