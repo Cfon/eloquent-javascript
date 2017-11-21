@@ -223,7 +223,7 @@
           this.$store.commit('SET_PARAGRAPH', {
             chapterId: this.chapterId,
             paragraphId: this.paragraphId,
-            data: this.editing
+            data: this.data
           })
 
           this.showSnackBar('段落已保存')
